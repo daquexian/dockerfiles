@@ -23,11 +23,15 @@ RUN ["/bin/bash", "-c", "tar xf clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.t
 pushd clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/ && \
 cp clangd clang-format clang-tidy git-clang-format clang-refactor /usr/bin/ && \
 popd && \
-cp share/clang/clang-tidy-diff.py /usr/bin && \
+pushd clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/ && \
+cp clang-tidy-diff.py clang-format-diff.py /usr/bin && \
+popd && \
 rm -rf clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04"]
 
 # Add common tools available in apt repository. We choose not to support python2
-RUN apt -o Acquire::http::proxy=false install -y pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff
+RUN apt -o Acquire::http::proxy=false install -y man locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate
+
+RUN locale-gen "en_US.UTF-8"
 
 # Get the nightly build neovim for floating window
 RUN wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && chmod 755 -R squashfs-root && rm nvim.appimage && rm `which nvim` && ln -s /squashfs-root/AppRun /usr/bin/nvim

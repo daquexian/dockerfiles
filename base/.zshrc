@@ -1,4 +1,6 @@
 export TERM=xterm-256color
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 export ZSH=$HOME/.oh-my-zsh
 unsetopt beep
@@ -34,7 +36,7 @@ bindkey "^?" backward-delete-char
 alias vim=nvim
 alias python=python3
 alias pip=pip3
-alias htop=top
+alias top=htop
 eval $(thefuck --alias)
 alias fk=fuck
 
