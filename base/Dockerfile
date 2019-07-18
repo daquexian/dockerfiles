@@ -1,4 +1,6 @@
 FROM ai-image.jd.com/nvidia/cuda:9.0-cudnn7.3.1-devel-ubuntu16.04
+MAINTAINER daquexian
+
 # COPY setup_base.sh .
 # RUN bash setup_base.sh
 
@@ -8,28 +10,30 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
 # For ppa
 RUN apt -o Acquire::http::proxy=false update
-RUN apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common 
+RUN apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
+    apt clean
+
+# Install aria2
+RUN apt -o Acquire::http::proxy=false install -y aria2 && apt clean
+
+# Install clangd-8, clang-format-8, clang-tidy-8 and so on
+RUN ["/bin/bash", "-c", "aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+pushd /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/ && \
+cp clangd clang-format clang-tidy git-clang-format clang-refactor /usr/bin/ && \
+popd && \
+pushd /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/ && \
+cp clang-tidy-diff.py clang-format-diff.py /usr/bin && \
+popd && \
+rm -rf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04"]
 
 # Add neovim ppa
 RUN add-apt-repository -y ppa:neovim-ppa/stable
+# && add-apt-repository -y ppa:git-core/ppa && aria2c https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh && bash script.deb.sh && rm script.deb.sh
 RUN apt -o Acquire::http::proxy=false update
 
-# Install aria2
-RUN apt -o Acquire::http::proxy=false install -y aria2 
-
-# Install clangd-8, clang-format-8, clang-tidy-8 and so on
-RUN aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
-RUN ["/bin/bash", "-c", "tar xf clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-pushd clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/ && \
-cp clangd clang-format clang-tidy git-clang-format clang-refactor /usr/bin/ && \
-popd && \
-pushd clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/ && \
-cp clang-tidy-diff.py clang-format-diff.py /usr/bin && \
-popd && \
-rm -rf clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04"]
-
 # Add common tools available in apt repository. We choose not to support python2
-RUN apt -o Acquire::http::proxy=false install -y man locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate
+RUN apt -o Acquire::http::proxy=false install -y man locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata && apt clean
 
 RUN locale-gen "en_US.UTF-8"
 
@@ -68,7 +72,8 @@ make install && \
 popd && \
 rm -rf gtags-unzipped"]
 
-RUN ["/bin/bash", "-c", "git clone https://github.com/universal-ctags/ctags.git && \
+# Install ctags
+RUN ["/bin/bash", "-c", "git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
 cd ctags && \
 ./autogen.sh  && \
 ./configure && \
@@ -78,13 +83,18 @@ rm -rf ctags"]
 
 COPY apply-format /usr/bin/
 COPY clangformat-git-hook /usr/bin/
+COPY clangtidy-git-hook /usr/bin/
 COPY install-clangformat-hook /usr/bin/
 COPY install-clangtidy-hook /usr/bin/
+
+# Set timezone
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ARG USERNAME
 
 # Add user "dev"
-RUN useradd $USERNAME -m && passwd -d $USERNAME && usermod -aG sudo $USERNAME
+RUN useradd $USERNAME -m && echo "dev:dev" | chpasswd && usermod -aG sudo $USERNAME
 
 # change shell to zsh for user dev
 RUN chsh -s `which zsh` $USERNAME
@@ -93,7 +103,7 @@ USER $USERNAME
 WORKDIR /home/$USERNAME/
 
 # Install node
-RUN curl -sL install-node.now.sh/lts | sudo bash -s -- --yes
+RUN echo "dev" | sudo -S bash -c "$(wget -O- install-node.now.sh/lts)" -s --yes
 # Install yarn
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
@@ -101,8 +111,8 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Install autosuggestions and syntax-highlighting
-RUN git clone https://github.com/zsh-users/zsh-autosuggestions /home/$USERNAME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /home/$USERNAME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+RUN git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions /home/$USERNAME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+RUN git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git /home/$USERNAME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 # Add nvim config to share config with vim
 RUN mkdir -p /home/$USERNAME/.config/nvim/ && \
@@ -117,9 +127,9 @@ COPY --chown=dev:dev .vimrc.local /home/$USERNAME/
 COPY --chown=dev:dev coc-settings.json /home/$USERNAME/.config/nvim/
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN vim +'PlugInstall --sync' +qa
-RUN vim +'CocInstall coc-yaml coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java -sync' +qa
+RUN vim +'CocInstall coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java -sync' +qa
 
-RUN git clone https://github.com/gpakosz/.tmux.git /home/$USERNAME/.tmux/ &&    \
+RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/$USERNAME/.tmux/ &&    \
 ln -s /home/$USERNAME/.tmux/.tmux.conf /home/$USERNAME/.tmux.conf
 COPY --chown=dev:dev .tmux.conf.local /home/$USERNAME/
 
