@@ -32,7 +32,7 @@ echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update
 
-RUN apt install -y clang-format-8 clang-tidy-8 clang-tools-8
+RUN ["/bin/bash", "-c", "apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && pushd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && popd"]
 
 RUN locale-gen "en_US.UTF-8"
 
@@ -133,10 +133,10 @@ ln -s /home/$USERNAME/.tmux/.tmux.conf /home/$USERNAME/.tmux.conf
 COPY --chown=dev:dev .tmux.conf.local /home/$USERNAME/
 
 # Set PyPI mirror
-RUN mkdir -p /home/$USER/.config/pip && \
-echo "[global]" >> /home/$USER/.config/pip/pip.conf && \
-echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/$USER/.config/pip/pip.conf && \
-echo "format = columns" >> /home/$USER/.config/pip/pip.conf
+RUN mkdir -p /home/$USERNAME/.config/pip && \
+echo "[global]" >> /home/$USERNAME/.config/pip/pip.conf && \
+echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/$USERNAME/.config/pip/pip.conf && \
+echo "format = columns" >> /home/$USERNAME/.config/pip/pip.conf
 # -----------
 
 # Copy .zshrc
