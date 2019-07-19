@@ -133,10 +133,16 @@ RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/$USERNAME/.tm
 ln -s /home/$USERNAME/.tmux/.tmux.conf /home/$USERNAME/.tmux.conf
 COPY --chown=dev:dev .tmux.conf.local /home/$USERNAME/
 
+# Set PyPI mirror
+RUN mkdir -p /home/$USER/.config/pip && \
+echo "[global]" >> /home/$USER/.config/pip/pip.conf && \
+echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/$USER/.config/pip/pip.conf && \
+echo "format = columns" >> /home/$USER/.config/pip/pip.conf && \
+# -----------
+
 # Copy .zshrc
 COPY --chown=dev:dev .zshrc /home/$USERNAME/.zshrc
 # Install fzf last so that the modified .zsrc will not be overwritted
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/$USERNAME/.fzf
-RUN /home/$USERNAME/.fzf/install --key-bindings --completion --update-rc
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/$USERNAME/.fzf && /home/$USERNAME/.fzf/install --key-bindings --completion --update-rc
 # -----------
 
