@@ -16,24 +16,23 @@ RUN apt -o Acquire::http::proxy=false install -y apt-utils software-properties-c
 # Install aria2
 RUN apt -o Acquire::http::proxy=false install -y aria2 && apt clean
 
-# Install clangd-8, clang-format-8, clang-tidy-8 and so on
-RUN ["/bin/bash", "-c", "aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-pushd /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/ && \
-cp clangd clang-format clang-tidy git-clang-format clang-refactor /usr/bin/ && \
-popd && \
-pushd /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/ && \
-cp clang-tidy-diff.py clang-format-diff.py /usr/bin && \
-popd && \
-rm -rf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04"]
-
 # Add neovim ppa
 RUN add-apt-repository -y ppa:neovim-ppa/stable
 # && add-apt-repository -y ppa:git-core/ppa && aria2c https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh && bash script.deb.sh && rm script.deb.sh
-RUN apt -o Acquire::http::proxy=false update
 
 # Add common tools available in apt repository. We choose not to support python2
-RUN apt -o Acquire::http::proxy=false install -y man locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata && apt clean
+RUN apt -o Acquire::http::proxy=false update && apt -o Acquire::http::proxy=false install -y man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata && apt clean
+
+RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
+echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
+echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
+echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
+echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list && \
+echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list
+
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update
+
+RUN apt install -y clang-format-8 clang-tidy-8 clang-tools-8
 
 RUN locale-gen "en_US.UTF-8"
 
@@ -137,7 +136,7 @@ COPY --chown=dev:dev .tmux.conf.local /home/$USERNAME/
 RUN mkdir -p /home/$USER/.config/pip && \
 echo "[global]" >> /home/$USER/.config/pip/pip.conf && \
 echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/$USER/.config/pip/pip.conf && \
-echo "format = columns" >> /home/$USER/.config/pip/pip.conf && \
+echo "format = columns" >> /home/$USER/.config/pip/pip.conf
 # -----------
 
 # Copy .zshrc
