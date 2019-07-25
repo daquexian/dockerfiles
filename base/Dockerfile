@@ -47,7 +47,7 @@ tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
 rm -f tmux-${TMUX_VERSION}.tar.gz &&       \
 pushd tmux-unzipped/tmux-${TMUX_VERSION} &&        \
 ./configure &&     \
-make &&        \
+make -j\$(nproc)&&        \
 make install &&       \
 popd &&        \
 rm -rf tmux-unzipped"]
