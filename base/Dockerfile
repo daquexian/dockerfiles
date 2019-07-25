@@ -32,7 +32,7 @@ echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/
 
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update
 
-RUN ["/bin/bash", "-c", "apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && pushd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && popd"]
+RUN ["/bin/bash", "-c", "apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && pushd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && ln -s clang-format-8 clang-format && popd"]
 
 RUN locale-gen "en_US.UTF-8"
 
