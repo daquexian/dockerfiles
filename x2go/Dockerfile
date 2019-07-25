@@ -1,4 +1,5 @@
 FROM ai-image.jd.com/develop-docker/base:0.02
+MAINTAINER daquexian
 
 USER root
 

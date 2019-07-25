@@ -1,4 +1,4 @@
-FROM ai-image.jd.com/nvidia/cuda:9.0-cudnn7.3.1-devel-ubuntu16.04
+FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 MAINTAINER daquexian
 
 # COPY setup_base.sh .
