@@ -1,4 +1,4 @@
-FROM ai-image.jd.com/develop-docker/base:0.02
+FROM ai-image.jd.com/develop-docker/base:0.0.2
 MAINTAINER daquexian
 
 USER root
@@ -9,6 +9,7 @@ RUN add-apt-repository ppa:x2go/stable && apt-get update && apt-get -o Acquire::
 
 RUN echo "#! /bin/bash" >> /run.sh && echo "echo \"dev\" | sudo -S /usr/sbin/sshd -D" >> /run.sh && chmod +x /run.sh
 
-USER dev
+ARG USERNAME
+USER $USERNAME
 
 CMD ["/run.sh"]
