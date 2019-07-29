@@ -17,7 +17,7 @@ RUN apt -o Acquire::http::proxy=false install -y apt-utils software-properties-c
 RUN apt -o Acquire::http::proxy=false install -y aria2 && apt clean
 
 # Add neovim ppa
-RUN add-apt-repository -y ppa:neovim-ppa/stable
+RUN apt update && add-apt-repository -y ppa:neovim-ppa/stable && apt clean
 # && add-apt-repository -y ppa:git-core/ppa && aria2c https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh && bash script.deb.sh && rm script.deb.sh
 
 # Add common tools available in apt repository. We choose not to support python2
