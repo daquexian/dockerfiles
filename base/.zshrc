@@ -4,7 +4,7 @@ export LANG=en_US.UTF-8
 export PATH=$HOME/.local/bin:$HOME/bin:/usr/local/bin:$PATH
 export ZSH=$HOME/.oh-my-zsh
 unsetopt beep
-CASE_SENSITIVE="true"
+CASE_INSENSITIVE="true"
 HYPHEN_INSENSITIVE="true"
 DISABLE_AUTO_UPDATE="true"
 export EDITOR=nvim
