@@ -275,7 +275,7 @@ au Filetype yaml setl ts=2 sts=2 sw=2
 
 autocmd VimEnter * call fzf#vim#with_preview('right:50%:hidden', '?')
 
-tnoremap <Esc> <C-\><C-n>
+tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
 
 nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
