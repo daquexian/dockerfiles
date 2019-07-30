@@ -2,6 +2,12 @@
 
 It is a base docker for the out-of-box development, mainly for C++ and Python.
 
+Pull command:
+
+```bash
+docker pull ai-image.jd.com/develop-docker/base:0.0.5
+```
+
 ## Basic Info
 
 OS: Ubuntu 16.04

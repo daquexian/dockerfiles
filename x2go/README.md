@@ -4,6 +4,12 @@ This docker is based on the base docker, and equipped with [x2go](https://wiki.x
 
 This docker aims to run desktop environment and GUI programms on servers.
 
+Pull command:
+
+```bash
+docker pull ai-image.jd.com/develop-docker/x2go:0.0.5
+```
+
 ## Usage
 
 1. Pull this docker on your server
