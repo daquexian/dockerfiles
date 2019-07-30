@@ -39,5 +39,6 @@ alias pip=pip3
 alias top=htop
 eval $(thefuck --alias)
 alias fk=fuck
+alias cmake="cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 
 source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
