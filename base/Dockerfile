@@ -118,7 +118,7 @@ COPY --chown=dev:dev .vimrc.local /home/$USERNAME/
 COPY --chown=dev:dev coc-settings.json /home/$USERNAME/.config/nvim/
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN vim +'PlugInstall --sync' +qa
-RUN vim +'CocInstall coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java -sync' +qa
+RUN vim +'CocInstall coc-json coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java -sync' +qa
 
 RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/$USERNAME/.tmux/ &&    \
 ln -s /home/$USERNAME/.tmux/.tmux.conf /home/$USERNAME/.tmux.conf
