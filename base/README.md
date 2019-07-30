@@ -16,24 +16,42 @@ Python: 3.5
 
 zsh 5.1.1
 
+Tab completions is case- and HYPHEN- insensitive.
+
+[Video](videos/zshinsensitive-2019-07-30_13.30.57.mkv)
+
 Commands are suggested as you type based on history and completions. Press ctrl-f to complete the command and press ctrl-j to complete and run the command.
 
+[Video](videos/zshautocompletion-2019-07-30_13.43.25.mkv)
+
 Press ctrl-r to get history commands and search them fuzzily.
+
+[Video](videos/fzfhistory-2019-07-30_13.38.03.mkv)
 
 ### Vim Configuration
 
 #### Keymaps
 
 Jump to definition: ,jd
+
 Jump to implementation: ,ji
+
 Find references: ,jf
+
 Rename: ,jj
+
 Format current file: `:Format`
+
 Fuzzy search in files: ,f
+
 Fuzzy search in opened buffers: ,b
+
 Search text in all files: `:Ag`
+
 Jump to next placeholder in a snippet: ctrl-j
+
 Jump to previous placeholder in a snippet: ctrl-k
+
 List all symbols (like JetBrains IDEs): space-s
 
 #### Text Objects
@@ -47,6 +65,8 @@ For example, `dia` deletes the arguments under the cursor, `vaa` selects the arg
 C++ diagnostics and completions (based on semantics) work out-of-box. A `compile_commands.json` is needed to provide accurate compile options, please check out https://clang.llvm.org/extra/clangd/Installation.html#compile-commands-json.
 
 In a git repository, `install-clangformat-hook` will install a git pre-commit hook that run clang-format on every git commit.
+
+[Video](videos/vimclangformat-2019-07-30_14.24.41.mkv)
 
 #### Python
 
