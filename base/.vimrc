@@ -80,7 +80,7 @@ let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
 let g:gutentags_auto_add_gtags_cscope = 0
 
 let $GTAGSLABEL = 'native-pygments'
-let $GTAGSCONF = '/usr/share/gtags/gtags.conf'
+let $GTAGSCONF = '/usr/local/share/gtags/gtags.conf'
 
 Plug 'skywind3000/gutentags_plus'
 
