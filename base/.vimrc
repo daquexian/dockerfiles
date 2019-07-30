@@ -92,9 +92,6 @@ Plug 'vim-scripts/a.vim'
 
 set noshowmode
 
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-let g:Lf_DefaultExternalTool = "rg"
-
 Plug 'octol/vim-cpp-enhanced-highlight'
 let g:cpp_experimental_template_highlight = 1
 Plug 'tpope/vim-unimpaired'
@@ -150,6 +147,11 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 let g:fzf_layout = {'down': '30%'}
 
+nnoremap <leader>f :Files
+nnoremap <leader>b :Buffers
+
+let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+
 " Command for git grep
 " - fzf#vim#grep(command, with_column, [options], [fullscreen])
 command! -bang -nargs=* GGrep
@@ -172,6 +174,17 @@ command! -bang -nargs=* Ag
   \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
   \                 <bang>0)
 
+" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(),
+  \   <bang>0)
+
+" Likewise, Files command with preview window
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
 """"""""""""""
 
 Plug 'SirVer/ultisnips'
@@ -179,9 +192,6 @@ let g:UltiSnipsExpandTrigger       = "<Nop>"
 let g:UltiSnipsJumpForwardTrigger  = "<Nop>"
 
 Plug 'honza/vim-snippets'
-
-"""""""""""""" ctrlp
-Plug 'kien/ctrlp.vim'
 
 """""""""""""" vim-airline
 Plug 'vim-airline/vim-airline'
