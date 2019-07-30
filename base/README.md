@@ -1,8 +1,8 @@
-## base development docker
+# Base Development Docker
 
 It is a base docker for the out-of-box development, mainly for C++ and Python.
 
-### Basic Info
+## Basic Info
 
 OS: Ubuntu 16.04
 
@@ -12,7 +12,7 @@ CMake: 3.14.4
 
 Python: 3.5
 
-### Shell Configuration
+## Shell Configuration
 
 zsh 5.1.1
 
@@ -28,39 +28,39 @@ Press ctrl-r to get history commands and search them fuzzily.
 
 [Video](videos/fzfhistory-2019-07-30_13.38.03.mkv)
 
-### Vim Configuration
+## Vim Configuration
 
-#### Keymaps
+### Keymaps
 
-Jump to definition: ,jd
+* Jump to definition: ,jd
 
-Jump to implementation: ,ji
+* Jump to implementation: ,ji
 
-Find references: ,jf
+* Find references: ,jf
 
-Rename: ,jj
+* Rename: ,jj
 
-Format current file: `:Format`
+* Format current file: `:Format`
 
-Fuzzy search in files: ,f
+* Fuzzy search in files: ,f
 
-Fuzzy search in opened buffers: ,b
+* Fuzzy search in opened buffers: ,b
 
-Search text in all files: `:Ag`
+* Search text in all files: `:Ag`
 
-Jump to next placeholder in a snippet: ctrl-j
+* Jump to next placeholder in a snippet: ctrl-j
 
-Jump to previous placeholder in a snippet: ctrl-k
+* Jump to previous placeholder in a snippet: ctrl-k
 
-List all symbols (like JetBrains IDEs): space-s
+* List all symbols (like JetBrains IDEs): space-s
 
-#### Text Objects
+### Text Objects
 
 Two new text objects: "a" for arguments and "f" for functions.
 
 For example, `dia` deletes the arguments under the cursor, `vaa` selects the arguments under the cursor including the comma, `dif` deletes the content of current function.
 
-#### C++
+### C++
 
 C++ diagnostics and completions (based on semantics) work out-of-box. A `compile_commands.json` is needed to provide accurate compile options, please check out https://clang.llvm.org/extra/clangd/Installation.html#compile-commands-json.
 
@@ -68,15 +68,20 @@ In a git repository, `install-clangformat-hook` will install a git pre-commit ho
 
 [Video](videos/vimclangformat-2019-07-30_14.24.41.mkv)
 
-#### Python
+### Python
 
 Python Language Server will be downloaded automatically when opening a .py file. The diagnostics and completions will work as soon as the language server is downloaded.
 
-### Other tools
+## Other tools
 
-tmux (with https://github.com/gpakosz/.tmux)
-gtags
-ctags
-htop (aliased to top)
-ag
-fzf
+* tmux (with https://github.com/gpakosz/.tmux)
+
+* gtags
+
+* ctags
+
+* htop (aliased to top)
+
+* ag
+
+* fzf
