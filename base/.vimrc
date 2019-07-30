@@ -108,7 +108,7 @@ Plug 'romainl/vim-qf'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 nmap <silent> <leader>jd <Plug>(coc-definition)
 nmap <silent> <leader>jj <Plug>(coc-rename)
-nmap <silent> <leader>ji <Plug>(coc-diagnostic-info)
+nmap <silent> <leader>ji <Plug>(coc-implementation)
 nmap <silent> <leader>jf <Plug>(coc-references)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
@@ -140,7 +140,7 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " let g:coc_snippet_prev = '<S-TAB>'
-nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr><Paste>
+nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 
 " (Optional) Multi-entry selection UI.
 Plug 'junegunn/fzf'
