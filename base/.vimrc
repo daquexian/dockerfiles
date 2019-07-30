@@ -147,8 +147,8 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 let g:fzf_layout = {'down': '30%'}
 
-nnoremap <leader>f :Files
-nnoremap <leader>b :Buffers
+nnoremap <leader>f :Files<cr>
+nnoremap <leader>b :Buffers<cr>
 
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
