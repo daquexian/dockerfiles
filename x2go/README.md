@@ -4,22 +4,16 @@ This docker is based on the base docker, and equipped with [x2go](https://wiki.x
 
 This docker aims to run desktop environment and GUI programms on servers.
 
-Pull command:
-
-```bash
-docker pull ai-image.jd.com/develop-docker/x2go:0.0.5
-```
-
 ## Usage
 
 1. Pull this docker on your server
 
 2. Start the docker
 
-```bash
-docker run -d -p replace_me_by_port:22 replace_me_by_docker_image
-```
+    ```bash
+    docker run -d -p replace_me_by_port:22 ai-image.jd.com/develop-docker/x2go:0.0.5
+    ```
 
-2. Install x2go client on your PC.
+3. Install x2go client on your PC.
 
-3. Connect to server_ip:port
+4. Connect to server_ip:port
