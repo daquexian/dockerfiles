@@ -6,4 +6,6 @@ This project aims to provide an out-of-box development environment for both PCs 
 
 [x2go docker](x2go)
 
+Both username and password is "dev".
+
 Any issues and pull requests are welcome!

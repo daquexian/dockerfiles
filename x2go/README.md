@@ -4,6 +4,10 @@ This docker is based on the base docker, and equipped with [x2go](https://wiki.x
 
 This docker aims to run desktop environment and GUI programms on servers.
 
+The following whole desktop environment is running on a server:
+
+![Screenshot](screenshot.png)
+
 ## Usage
 
 1. Pull this docker on your server
@@ -16,4 +20,6 @@ This docker aims to run desktop environment and GUI programms on servers.
 
 3. Install x2go client on your PC.
 
-4. Connect to server_ip:port
+4. Connect to server_ip:port as user "dev", set session type as XFCE
+
+5. Enjoy the desktop environment running on your server!
