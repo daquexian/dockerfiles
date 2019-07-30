@@ -1,5 +1,5 @@
 {
-  "coc.preferences.codeLens.enable": true,
+  "python.jediEnabled": false,
   "languageserver": {
     "clangd": {
       "command": "clangd",

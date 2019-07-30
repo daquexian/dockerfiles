@@ -49,7 +49,7 @@ rm -rf tmux-unzipped"]
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
 # Install cmake via pip, install pygments for gtags, pynvim for neovim
-RUN pip3 install cmake pygments pynvim thefuck
+RUN pip3 install cmake pygments pynvim thefuck pylint
 
 # Install gtags
 RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.3 &&     \
