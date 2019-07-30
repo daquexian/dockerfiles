@@ -22,17 +22,21 @@ Python: 3.5
 
 zsh 5.1.1
 
+Powerful highlighting and completion
+
+![Video](videos/zshhlcomplete-2019-07-30_17.49.24.gif)
+
 Tab completions is case- and HYPHEN- insensitive.
 
-[Video](videos/zshinsensitive-2019-07-30_13.30.57.mkv)
+![Video](videos/zshinsensitive-2019-07-30_13.30.57.gif)
 
 Commands are suggested as you type based on history and completions. Press ctrl-f to complete the command and press ctrl-j to complete and run the command.
 
-[Video](videos/zshautocompletion-2019-07-30_13.43.25.mkv)
+![Video](videos/zshautocompletion-2019-07-30_13.43.25.gif)
 
 Press ctrl-r to get history commands and search them fuzzily.
 
-[Video](videos/fzfhistory-2019-07-30_13.38.03.mkv)
+![Video](videos/fzfhistory-2019-07-30_18.00.00.gif)
 
 ## Vim Configuration
 
@@ -72,11 +76,35 @@ C++ diagnostics and completions (based on semantics) work out-of-box. A `compile
 
 In a git repository, `install-clangformat-hook` will install a git pre-commit hook that run clang-format on every git commit.
 
-[Video](videos/vimclangformat-2019-07-30_14.24.41.mkv)
+![Video](videos/vimclangformat-2019-07-30_14.24.41.gif)
 
 ### Python
 
 Python Language Server will be downloaded automatically when opening a .py file. The diagnostics and completions will work as soon as the language server is downloaded.
+
+## Aliases
+
+* vim    -> nvim
+
+* python -> python3
+
+* pip    -> pip3
+
+* top    -> htop
+
+* fk     -> fuck
+
+* cmake  -> cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+* git st -> git status
+
+* git ci -> git commit
+
+* git co -> git checkout
+
+* git br -> git branch
+
+* git cp -> git cherry-pick
 
 ## Other tools
 
