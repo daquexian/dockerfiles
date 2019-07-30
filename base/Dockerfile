@@ -138,3 +138,4 @@ COPY --chown=dev:dev .zshrc /home/$USERNAME/.zshrc
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/$USERNAME/.fzf && /home/$USERNAME/.fzf/install --key-bindings --completion --update-rc
 # -----------
 
+CMD ["zsh"]
