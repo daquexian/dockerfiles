@@ -28,12 +28,13 @@ Jump to definition: ,jd
 Jump to implementation: ,ji
 Find references: ,jf
 Rename: ,jj
-Format current file: type :Format
+Format current file: `:Format`
 Fuzzy search in files: ,f
 Fuzzy search in opened buffers: ,b
-Search text in all files: type :Ag
+Search text in all files: `:Ag`
 Jump to next placeholder in a snippet: ctrl-j
 Jump to previous placeholder in a snippet: ctrl-k
+List all symbols (like JetBrains IDEs): space-s
 
 #### Text Objects
 
