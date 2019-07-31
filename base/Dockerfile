@@ -83,6 +83,8 @@ COPY install-clangtidy-hook /usr/bin/
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+RUN echo "export LC_ALL=en_US.UTF-8" >> /etc/profile && echo "export LANG=en_US.UTF-8" >> /etc/profile
+
 ARG USERNAME
 
 # Add user "dev"
