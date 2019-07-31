@@ -1,0 +1,11 @@
+XTerm.termName: xterm-256color
+XTerm.vt100.locale: true
+XTerm.vt100.reverseVideo: true
+XTerm.vt100.selectToClipboard: true
+XTerm.vt100.metaSendsEscape: true
+XTerm.vt100.faceName: DejaVu Sans Mono for Powerline:style=Book:antialias=false
+XTerm.vt100.faceNameDoublesize: WenQuanYi WenQuanYi Bitmap Song
+XTerm.vt100.faceSize: 12
+XTerm.vt100.translations: #override \n\
+Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n\
+Ctrl Shift <Key>V: insert-selection(CLIPBOARD)
