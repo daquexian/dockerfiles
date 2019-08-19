@@ -15,19 +15,41 @@ RUN apt -o Acquire::http::proxy=false update && \
     add-apt-repository ppa:max-c-lv/shadowsocks-libev -y && \
     add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
     apt update && \
-    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata shadowsocks-libev zip && \
+    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata shadowsocks-libev zip libstdc++-7-dev && \
     apt clean
 
-RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
-echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
-echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
-echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
-echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list && \
-echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list
-
-RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update && apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && cd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && ln -s clang-format-8 clang-format && apt clean
-
 RUN locale-gen "en_US.UTF-8"
+
+RUN ["/bin/bash", "-c", "aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+pushd /usr/bin/ && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clangd && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang clang-8 && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-format && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-tidy && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/git-clang-format && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-tidy-diff.py && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-format-diff.py && \
+popd && \
+rm /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+"]
+
+# Install Ninja
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
+
+RUN git clone https://github.com/MaskRay/ccls --depth=1 && \
+    mkdir ccls/build && cd ccls/build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
+    cmake --build . -- -j`nproc`
+    ln -s `pwd`/ccls /usr/bin/ccls
+
+# RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
+# echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
+# echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
+# echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
+# echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list && \
+# echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list
+#
+# RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update && apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && cd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && ln -s clang-format-8 clang-format && apt clean
 
 # Get the nightly build neovim for floating window
 RUN wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && chmod 755 -R squashfs-root && rm nvim.appimage && rm `which nvim` && ln -s /squashfs-root/AppRun /usr/bin/nvim
@@ -50,7 +72,7 @@ rm -rf tmux-unzipped"]
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
 # Install cmake via pip, install pygments for gtags, pynvim for neovim
-RUN pip3 install cmake pygments pynvim thefuck pylint
+RUN pip3 install cmake==3.14.4 pygments pynvim thefuck pylint
 
 # Install gtags
 RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.3 &&     \
@@ -74,9 +96,6 @@ make install && \
 rm -rf ctags"]
 
 RUN ["/bin/bash", "-c", "mkdir git-lfs && curl -L https://github.com/git-lfs/git-lfs/releases/download/v2.8.0/git-lfs-linux-amd64-v2.8.0.tar.gz | tar xzf - -C git-lfs && pushd git-lfs && ./install.sh && popd && rm -rf git-lfs"]
-
-# Install Ninja
-RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
 
 COPY apply-format /usr/bin/
 COPY clangformat-git-hook /usr/bin/
