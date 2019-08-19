@@ -25,6 +25,7 @@ tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
 pushd /usr/bin/ && \
 ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clangd && \
 ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang clang-8 && \
+ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang++ clang++-8 && \
 ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-format && \
 ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-tidy && \
 ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/git-clang-format && \
@@ -36,9 +37,15 @@ rm /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz"]
 # Install Ninja
 RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
 
-RUN git clone https://github.com/MaskRay/ccls --depth=1 && \
-    mkdir ccls/build && cd ccls/build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
-    cmake --build . -- -j`nproc`
+# Install pip
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3
+
+# Install cmake via pip, install pygments for gtags, pynvim for neovim
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.14.4 pygments pynvim thefuck pylint
+
+RUN git clone https://github.com/MaskRay/ccls --recursive --depth=1 && \
+    mkdir ccls/build && cd ccls/build && CC=clang-8 CXX=clang++-8 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
+    cmake --build . -- -j`nproc` && \
     ln -s `pwd`/ccls /usr/bin/ccls
 
 # RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
@@ -66,12 +73,6 @@ make install &&       \
 popd &&        \
 rm -rf tmux-unzipped"]
 # -----------
-
-# Install pip
-RUN curl https://bootstrap.pypa.io/get-pip.py | python3
-
-# Install cmake via pip, install pygments for gtags, pynvim for neovim
-RUN pip3 install cmake==3.14.4 pygments pynvim thefuck pylint
 
 # Install gtags
 RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.3 &&     \
