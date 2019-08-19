@@ -14,10 +14,8 @@ RUN apt -o Acquire::http::proxy=false update && \
     add-apt-repository -y ppa:neovim-ppa/stable && \
     add-apt-repository ppa:max-c-lv/shadowsocks-libev -y && \
     apt update && \
-    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata shadowsocks-libev && \
+    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata shadowsocks-libev zip && \
     apt clean
-
-# && add-apt-repository -y ppa:git-core/ppa && aria2c https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh && bash script.deb.sh && rm script.deb.sh
 
 RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
 echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
@@ -75,6 +73,9 @@ make install && \
 rm -rf ctags"]
 
 RUN ["/bin/bash", "-c", "mkdir git-lfs && curl -L https://github.com/git-lfs/git-lfs/releases/download/v2.8.0/git-lfs-linux-amd64-v2.8.0.tar.gz | tar xzf - -C git-lfs && pushd git-lfs && ./install.sh && popd && rm -rf git-lfs"]
+
+# Install Ninja
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
 
 COPY apply-format /usr/bin/
 COPY clangformat-git-hook /usr/bin/
