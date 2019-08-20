@@ -2,6 +2,8 @@ set encoding=utf-8
 
 set cmdheight=2
 
+set updatetime=300
+
 cmap w!! w !sudo tee > /dev/null %
 cmap vsb vertical sb
 
@@ -110,13 +112,15 @@ nmap <silent> <leader>jd <Plug>(coc-definition)
 nmap <silent> <leader>jj <Plug>(coc-rename)
 nmap <silent> <leader>ji <Plug>(coc-implementation)
 nmap <silent> <leader>jf <Plug>(coc-references)
+nmap <silent> <leader>jt <Plug>(coc-type-definition)<cr>
+nnoremap <silent> <leader>jb :call CocLocations('ccls','$ccls/inheritance',{'levels':10})<cr>
+nnoremap <silent> <leader>je :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':10})<cr>
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 " Use `[c` and `]c` to navigate diagnostics
 nmap <silent> <C-j> <Plug>(coc-diagnostic-next)
 nmap <silent> <C-k> <Plug>(coc-diagnostic-prev)
 nnoremap <silent> K :call CocActionAsync('doHover')<cr>
-set updatetime=1000
 au CursorMoved * sil call CocActionAsync('highlight')
 au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
 augroup mygroup
@@ -323,3 +327,5 @@ inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 source $HOME/.vimrc.local
+
+hi CocHighlightText guibg=none guifg=none gui=underline

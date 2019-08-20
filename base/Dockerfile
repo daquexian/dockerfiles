@@ -1,9 +1,6 @@
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 MAINTAINER daquexian
 
-# COPY setup_base.sh .
-# RUN bash setup_base.sh
-
 # Uncomment it if you are in China
 RUN sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
