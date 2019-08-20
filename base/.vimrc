@@ -292,6 +292,17 @@ autocmd VimEnter * call fzf#vim#with_preview('right:50%:hidden', '?')
 
 tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
 
+nmap ˙ <A-h>
+nmap ∆ <A-j>
+nmap ˚ <A-k>
+nmap ¬ <A-l>
+nmap « <A-\>
+
+tmap ˙ <A-h>
+tmap ∆ <A-j>
+tmap ˚ <A-k>
+tmap ¬ <A-l>
+
 nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
