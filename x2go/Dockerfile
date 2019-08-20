@@ -1,4 +1,4 @@
-FROM ai-image.jd.com/develop-docker/base:0.0.6
+FROM ai-image.jd.com/develop-docker/base:0.0.7
 MAINTAINER daquexian
 
 ARG USERNAME
@@ -10,9 +10,9 @@ RUN add-apt-repository ppa:x2go/stable && apt-get update && apt-get -o Acquire::
 
 RUN echo "#! /bin/bash" >> /run.sh && echo "echo \"dev\" | sudo -S /usr/sbin/sshd -D" >> /run.sh && chmod +x /run.sh
 
-COPY --chown=$USERNAME:$USERNAME configs/.Xresources /home/$USERNAME/.Xresources
+COPY --chown=dev:dev configs/.Xresources /home/$USERNAME/.Xresources
 COPY configs/wallpaper.jpg /usr/share/backgrounds/chromeos-wallpaper.jpg
-COPY --chown=$USERNAME:$USERNAME configs/xfce4-desktop.xml /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
+COPY --chown=dev:dev configs/xfce4-desktop.xml /home/$USERNAME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml
 RUN echo "TerminalEmulator=xterm" > /home/$USERNAME/.config/xfce4/helpers.rc
 
 USER $USERNAME
