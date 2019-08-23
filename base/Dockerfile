@@ -38,7 +38,7 @@ RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-lin
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
 # Install cmake via pip, install pygments for gtags, pynvim for neovim
-RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.14.4 pygments pynvim thefuck pylint
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.14.4 pygments pynvim thefuck pylint flake8 autopep8 mypy
 
 RUN git clone https://github.com/MaskRay/ccls --recursive --depth=1 && \
     mkdir ccls/build && cd ccls/build && CC=clang-8 CXX=clang++-8 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
