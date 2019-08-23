@@ -267,6 +267,8 @@ Plug 'kana/vim-textobj-function'
 Plug 'sgur/vim-textobj-parameter'
 let g:vim_textobj_parameter_mapping = 'a'
 
+Plug 'vim-scripts/DoxygenToolkit.vim'
+
 call plug#end()            " required
 
 filetype plugin indent on    " required
