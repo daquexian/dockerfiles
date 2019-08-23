@@ -47,4 +47,7 @@ else
     echo "# clang-tidy hook" >> $hook_path
     echo 'clangtidy-git-hook' >> $hook_path
     chmod +x $hook_path
+    if [[ ! -f $top_dir/.clang-tidy ]]; then
+        cp /usr/share/default_clang_tidy $top_dir/.clang-tidy
+    fi
 fi

@@ -161,4 +161,7 @@ COPY --chown=dev:dev .zshrc /home/$USERNAME/.zshrc
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/$USERNAME/.fzf && /home/$USERNAME/.fzf/install --key-bindings --completion --update-rc
 # -----------
 
+COPY default_clang_tidy /usr/share/default_clang_tidy
+COPY default_clang_format /usr/share/default_clang_format
+
 CMD ["zsh"]
