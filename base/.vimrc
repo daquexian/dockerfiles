@@ -121,14 +121,15 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 nmap <silent> <C-j> <Plug>(coc-diagnostic-next)
 nmap <silent> <C-k> <Plug>(coc-diagnostic-prev)
 nnoremap <silent> K :call CocActionAsync('doHover')<cr>
-au CursorMoved * sil call CocActionAsync('highlight')
-au CursorHoldI * sil call CocActionAsync('showSignatureHelp')
-augroup mygroup
-  autocmd!
+nnoremap <silent> <A-p> :call CocActionAsync('showSignatureHelp')<cr>
+imap <silent> <A-p> <c-o><A-p>
+augroup cocaug
+  au!
+  au CursorMoved * sil call CocActionAsync('highlight')
   " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  au FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  au User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 " Use `:Format` to format current buffer
 command! -nargs=0 Format :call CocAction('format')
