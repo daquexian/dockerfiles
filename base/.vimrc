@@ -36,8 +36,6 @@ set foldmethod=syntax
 set foldlevel=99
 filetype off                  " required
 
-highlight Pmenu ctermbg=gray guibg=gray     " set pmenu color to gray
-
 nnoremap <leader>, :b#<CR>
 
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -201,13 +199,6 @@ Plug 'honza/vim-snippets'
 
 """""""""""""" vim-airline
 Plug 'vim-airline/vim-airline'
-let g:airline#extensions#languageclient#enabled = 1
-let airline#extensions#languageclient#error_symbol = 'E:'
-let airline#extensions#languageclient#warning_symbol = 'W:'
-let airline#extensions#languageclient#show_line_numbers = 1
-let airline#extensions#languageclient#open_lnum_symbol = '(L'
-let airline#extensions#languageclient#close_lnum_symbol = ')'
-let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 " let g:airline#extensions#tabline#fnamemod = ':t'
 " let g:airline#extensions#tabline#show_buffers = 1
@@ -218,6 +209,14 @@ let g:airline#extensions#tabline#show_buffers = 0
 let g:airline#extensions#tabline#show_tabs = 1
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+
+let g:airline_section_z = ''
+function! SetAirlineZ()
+    let g:airline_section_z = get(g:, 'coc_status', '')
+    exe ':AirlineRefresh!'
+endfunction
+au CursorHold * call SetAirlineZ()
+au CursorHoldI * call SetAirlineZ()
 
 """""""""""""" nerdtree
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -269,6 +268,9 @@ let g:vim_textobj_parameter_mapping = 'a'
 
 Plug 'vim-scripts/DoxygenToolkit.vim'
 
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-dispatch'
+
 call plug#end()            " required
 
 filetype plugin indent on    " required
@@ -300,6 +302,12 @@ nmap ∆ <A-j>
 nmap ˚ <A-k>
 nmap ¬ <A-l>
 nmap « <A-\>
+nmap « <A-r>
+nmap ¨ <A-u>
+nmap ß <A-s>
+nmap ´ <A-e>
+nmap ç <A-c>
+nmap ø <A-o>
 
 tmap ˙ <A-h>
 tmap ∆ <A-j>

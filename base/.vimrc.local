@@ -1,6 +1,5 @@
-" set background=dark
-" set background=light
 let ayucolor="mirage"
+" let ayucolor="light"
 colorscheme ayu
 " colorscheme solarized
 " colorscheme molokai

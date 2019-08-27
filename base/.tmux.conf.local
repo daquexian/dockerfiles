@@ -281,3 +281,16 @@ bind-key -T copy-mode-vi M-j select-pane -D
 bind-key -T copy-mode-vi M-k select-pane -U
 bind-key -T copy-mode-vi M-l select-pane -R
 bind-key -T copy-mode-vi M-\ select-pane -l
+
+# macos
+bind-key -n ˙ if-shell "$is_vim" "send-keys ˙"  "select-pane -L"
+bind-key -n ∆ if-shell "$is_vim" "send-keys ∆"  "select-pane -D"
+bind-key -n ˚ if-shell "$is_vim" "send-keys ˚"  "select-pane -U"
+bind-key -n ¬ if-shell "$is_vim" "send-keys ¬"  "select-pane -R"
+bind-key -n « if-shell "$is_vim" "send-keys «" "select-pane -l"
+bind-key -T copy-mode-vi ˙ select-pane -L
+bind-key -T copy-mode-vi ∆ select-pane -D
+bind-key -T copy-mode-vi ˚ select-pane -U
+bind-key -T copy-mode-vi ¬ select-pane -R
+bind-key -T copy-mode-vi « select-pane -l
+
