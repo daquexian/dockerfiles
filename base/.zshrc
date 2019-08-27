@@ -17,7 +17,7 @@ plugins=(
     history
     pip
     python
-    vi-mode
+    # vi-mode
     z
     )
 

@@ -1,4 +1,4 @@
-FROM ai-image.jd.com/develop-docker/base:0.0.7
+FROM ai-image.jd.com/develop-docker/base:0.0.11
 MAINTAINER daquexian
 
 ARG USERNAME

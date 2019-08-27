@@ -5,8 +5,10 @@ It is a base docker for the out-of-box development, mainly for C++ and Python.
 Pull command:
 
 ```bash
-docker pull ai-image.jd.com/develop-docker/base:0.0.5
+docker pull ai-image.jd.com/develop-docker/base:replace_me_with_the_latest_version
 ```
+
+The latest version can be found at [here](http://ai-image.jd.com/harbor/projects/118/repositories/develop-docker%2Fbase).
 
 ## Basic Info
 
@@ -86,15 +88,9 @@ Python Language Server will be downloaded automatically when opening a .py file.
 
 * vim    -> nvim
 
-* python -> python3
-
-* pip    -> pip3
-
 * top    -> htop
 
 * fk     -> fuck
-
-* cmake  -> cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 * git st -> git status
 
