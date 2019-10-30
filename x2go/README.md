@@ -15,7 +15,7 @@ The following whole desktop environment is running on a server:
 2. Start the docker
 
     ```bash
-    docker run -d -p replace_me_by_port:22 ai-image.jd.com/develop-docker/x2go:replace_me_with_the_latest_version
+    docker run -d -p replace_me_with_port:22 ai-image.jd.com/develop-docker/x2go:replace_me_with_the_latest_version
     ```
 
     Add `--runtime=nvidia` after `docker run` if you need gpu support.
