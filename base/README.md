@@ -5,10 +5,10 @@ It is a base docker for the out-of-box development, mainly for C++ and Python.
 Pull command:
 
 ```bash
-docker pull ai-image.jd.com/develop-docker/base:replace_me_with_the_latest_version
+docker pull ai-image.jd.com/dockers-for-development/base:replace_me_with_the_latest_version
 ```
 
-The latest version can be found at [here](http://ai-image.jd.com/harbor/projects/118/repositories/develop-docker%2Fbase).
+The latest version can be found at [here](http://ai-image.jd.com/harbor/projects/169/repositories/dockers-for-development%2Fbase).
 
 ## Basic Info
 
