@@ -15,12 +15,12 @@ The following whole desktop environment is running on a server:
 2. Start the docker
 
     ```bash
-    docker run -d -p replace_me_with_port:22 ai-image.jd.com/develop-docker/x2go:replace_me_with_the_latest_version
+    docker run -d -p replace_me_with_port:22 ai-image.jd.com/dockers-for-development/x2go:replace_me_with_the_latest_version
     ```
 
     Add `--runtime=nvidia` after `docker run` if you need gpu support.
 
-    The latest version can be found at [here](http://ai-image.jd.com/harbor/projects/118/repositories/develop-docker%2Fx2go).
+    The latest version can be found at [here](http://ai-image.jd.com/harbor/projects/169/repositories/dockers-for-development%2Fx2go).
 
 3. Install x2go client on your PC.
 
