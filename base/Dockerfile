@@ -8,29 +8,29 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 # Add common tools available in apt repository. We choose not to support python2
 RUN apt -o Acquire::http::proxy=false update && \
     apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
-    add-apt-repository -y ppa:neovim-ppa/stable && \
-    add-apt-repository ppa:max-c-lv/shadowsocks-libev -y && \
     add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
     apt update && \
-    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev neovim build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata shadowsocks-libev zip libstdc++-7-dev tree && \
+    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata zip libstdc++-7-dev tree && \
     apt clean
 
 RUN locale-gen "en_US.UTF-8"
 
-RUN ["/bin/bash", "-c", "aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-pushd /usr/bin/ && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clangd && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang clang-8 && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang++ clang++-8 && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-format && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-tidy && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/git-clang-format && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-tidy-diff.py && \
-ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-format-diff.py && \
-popd && \
-rm /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz"]
+RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
+# RUN ["/bin/bash", "-c", "aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+# tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
+# pushd /usr/bin/ && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clangd && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang clang-8 && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang++ clang++-8 && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-format && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-tidy && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/git-clang-format && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-tidy-diff.py && \
+# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-format-diff.py && \
+# popd && \
+# rm /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz"]
+# 
 # Install Ninja
 RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
 
@@ -40,10 +40,10 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 # Install cmake via pip, install pygments for gtags, pynvim for neovim
 RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.14.4 pygments pynvim thefuck pylint flake8 autopep8 mypy
 
-RUN git clone https://github.com/MaskRay/ccls --recursive --depth=1 && \
-    mkdir ccls/build && cd ccls/build && CC=clang-8 CXX=clang++-8 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
-    cmake --build . -- -j`nproc` && \
-    ln -s `pwd`/ccls /usr/bin/ccls
+# RUN git clone https://github.com/MaskRay/ccls --recursive --depth=1 && \
+    # mkdir ccls/build && cd ccls/build && CC=clang-8 CXX=clang++-8 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
+    # cmake --build . -- -j`nproc` && \
+    # ln -s `pwd`/ccls /usr/bin/ccls
 
 # RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
 # echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
@@ -54,11 +54,10 @@ RUN git clone https://github.com/MaskRay/ccls --recursive --depth=1 && \
 #
 # RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update && apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && cd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && ln -s clang-format-8 clang-format && apt clean
 
-# Get the nightly build neovim for floating window
-RUN wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && chmod 755 -R squashfs-root && rm nvim.appimage && rm `which nvim` && ln -s /squashfs-root/AppRun /usr/bin/nvim
+RUN wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && chmod 755 -R squashfs-root && rm nvim.appimage && ln -s /squashfs-root/AppRun /usr/bin/nvim
 
 # Install tmux
-RUN ["/bin/bash", "-c", "TMUX_VERSION=2.9a &&       \
+RUN ["/bin/bash", "-c", "TMUX_VERSION=3.0a &&       \
 wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
 mkdir tmux-unzipped &&    \
 tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
@@ -100,25 +99,27 @@ COPY clangtidy-git-hook /usr/bin/
 COPY install-clangformat-hook /usr/bin/
 COPY install-clangtidy-hook /usr/bin/
 
+# Install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
+RUN apt-get install -y nodejs
+
 # Set timezone
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN echo "export LC_ALL=en_US.UTF-8" >> /etc/zsh/zshenv && echo "export LANG=en_US.UTF-8" >> /etc/zsh/zshenv
 
-ARG USERNAME
+ARG DEV_UID
 
 # Add user "dev"
-RUN useradd $USERNAME -m && echo "dev:dev" | chpasswd && usermod -aG sudo $USERNAME
+RUN useradd dev -m -u $DEV_UID && echo "dev:dev" | chpasswd && usermod -aG sudo dev
 
 # change shell to zsh for user dev
-RUN chsh -s `which zsh` $USERNAME
+RUN chsh -s `which zsh` dev
 
-USER $USERNAME
-WORKDIR /home/$USERNAME/
+USER dev
+WORKDIR /home/dev/
 
-# Install node
-RUN echo "dev" | sudo -S bash -c "$(wget -O- install-node.now.sh/lts)" -s --yes
 # Install yarn
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 
@@ -126,39 +127,39 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Install autosuggestions and syntax-highlighting
-RUN git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions /home/$USERNAME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-RUN git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git /home/$USERNAME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+RUN git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions /home/dev/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+RUN git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git /home/dev/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 # Add nvim config to share config with vim
-RUN mkdir -p /home/$USERNAME/.config/nvim/ && \
-echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> /home/$USERNAME/.config/nvim/init.vim && \
-echo "let &packpath=&runtimepath" >> /home/$USERNAME/.config/nvim/init.vim && \
-echo "source ~/.vimrc" >> /home/$USERNAME/.config/nvim/init.vim
+RUN mkdir -p /home/dev/.config/nvim/ && \
+echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> /home/dev/.config/nvim/init.vim && \
+echo "let &packpath=&runtimepath" >> /home/dev/.config/nvim/init.vim && \
+echo "source ~/.vimrc" >> /home/dev/.config/nvim/init.vim
 # -----------
 
-COPY --chown=dev:dev .gitconfig /home/$USERNAME/
-COPY --chown=dev:dev .vimrc /home/$USERNAME/
-COPY --chown=dev:dev .vimrc.local /home/$USERNAME/
-COPY --chown=dev:dev coc-settings.json /home/$USERNAME/.config/nvim/
+COPY --chown=dev:dev .gitconfig /home/dev/
+COPY --chown=dev:dev .vimrc /home/dev/
+COPY --chown=dev:dev .vimrc.local /home/dev/
+COPY --chown=dev:dev coc-settings.json /home/dev/.config/nvim/
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-RUN vim +'PlugInstall --sync' +qa
-RUN vim +'CocInstall coc-json coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java -sync' +qa
+RUN nvim +'PlugInstall --sync' +qa
+RUN nvim +'CocInstall coc-json coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java coc-clangd coc-cmake -sync' +qa
 
-RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/$USERNAME/.tmux/ &&    \
-ln -s /home/$USERNAME/.tmux/.tmux.conf /home/$USERNAME/.tmux.conf
-COPY --chown=dev:dev .tmux.conf.local /home/$USERNAME/
+RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/dev/.tmux/ &&    \
+ln -s /home/dev/.tmux/.tmux.conf /home/dev/.tmux.conf
+COPY --chown=dev:dev .tmux.conf.local /home/dev/
 
 # Set PyPI mirror
-RUN mkdir -p /home/$USERNAME/.config/pip && \
-echo "[global]" >> /home/$USERNAME/.config/pip/pip.conf && \
-echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/$USERNAME/.config/pip/pip.conf && \
-echo "format = columns" >> /home/$USERNAME/.config/pip/pip.conf
+RUN mkdir -p /home/dev/.config/pip && \
+echo "[global]" >> /home/dev/.config/pip/pip.conf && \
+echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/dev/.config/pip/pip.conf && \
+echo "format = columns" >> /home/dev/.config/pip/pip.conf
 # -----------
 
 # Copy .zshrc
-COPY --chown=dev:dev .zshrc /home/$USERNAME/.zshrc
+COPY --chown=dev:dev .zshrc /home/dev/.zshrc
 # Install fzf last so that the modified .zsrc will not be overwritted
-RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/$USERNAME/.fzf && /home/$USERNAME/.fzf/install --key-bindings --completion --update-rc
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/dev/.fzf && /home/dev/.fzf/install --key-bindings --completion --update-rc
 # -----------
 
 COPY default_clang_tidy /usr/share/default_clang_tidy

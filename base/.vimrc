@@ -210,14 +210,6 @@ let g:airline#extensions#tabline#show_tabs = 1
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 
-let g:airline_section_z = ''
-function! SetAirlineZ()
-    let g:airline_section_z = get(g:, 'coc_status', '')
-    exe ':AirlineRefresh!'
-endfunction
-au CursorHold * call SetAirlineZ()
-au CursorHoldI * call SetAirlineZ()
-
 """""""""""""" nerdtree
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 let g:NERDTreeDirAllows=0
@@ -270,6 +262,8 @@ Plug 'vim-scripts/DoxygenToolkit.vim'
 
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-dispatch'
+
+Plug 'Krasjet/auto.pairs'
 
 call plug#end()            " required
 

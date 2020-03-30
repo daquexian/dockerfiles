@@ -1,16 +1,8 @@
 {
   "python.jediEnabled": false,
+  "clangd.path": "clangd-10",
+  "clangd.arguments": ["-cross-file-rename"],
   "languageserver": {
-    "ccls": {
-      "command": "ccls",
-      "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
-      "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
-      "initializationOptions": {
-         "cache": {
-           "directory": "/tmp/ccls-cache"
-         }
-       }
-    }
   }
 }
 
