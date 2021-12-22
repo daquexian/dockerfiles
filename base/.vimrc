@@ -452,9 +452,8 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 lua <<EOF
 
-
--- require('nvim-autopairs').setup({})
-
+local ok, _ = pcall(require, 'nvim-treesitter.configs')
+if ok then
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   incremental_selection = {
@@ -475,18 +474,12 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+end
+
 EOF
 
 set background=light
 
-" lua <<EOF
-" require('ayu').setup({
-"     mirage = false, -- Set to `true` to use `mirage` variant instead of `dark` for dark background.
-"     overrides = {}, -- A dictionary with a group names associated with a dictionary with parameters (`bg`, `fg`, `sp` and `style`) and colors in hex.
-" })
-" EOF
-"
-" colorscheme gruvbox-material
 let g:airline_theme = 'edge'
 let g:edge_current_word = 'underline'
 let g:edge_diagnostic_text_highlight = 1
