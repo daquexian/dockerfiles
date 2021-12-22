@@ -1,44 +1,42 @@
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:11.2.2-cudnn8-devel-ubuntu20.04
 MAINTAINER daquexian
+
+ENV DEBIAN_FRONTEND=noninteractive 
 
 # Uncomment it if you are in China
 RUN sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
 # Add common tools available in apt repository. We choose not to support python2
-RUN apt -o Acquire::http::proxy=false update && \
+RUN apt update && \
     apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
-    add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
     apt update && \
-    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev python3-venv libcurl4-openssl-dev gdb tzdata zip libstdc++-7-dev tree && \
+    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev libcurl4-openssl-dev gdb tzdata zip tree sudo libstdc++-10-dev libssl-dev libxxhash-dev zlib1g-dev clang ccache rsync && \
     apt clean
 
 RUN locale-gen "en_US.UTF-8"
 
 RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
-# RUN ["/bin/bash", "-c", "aria2c -s16 -x16 http://releases.llvm.org/8.0.0/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-# tar xf /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz && \
-# pushd /usr/bin/ && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clangd && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang clang-8 && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang++ clang++-8 && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-format && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/clang-tidy && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/bin/git-clang-format && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-tidy-diff.py && \
-# ln -s /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/share/clang/clang-format-diff.py && \
-# popd && \
-# rm /clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz"]
-# 
 # Install Ninja
-RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
 
 # Install pip
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
+# Install mold
+RUN git clone https://github.com/rui314/mold.git && \
+    cd mold && \
+    git checkout v1.0.0 && \
+    make -j$(nproc) && \
+    make install && \
+    mv /usr/bin/ld /usr/bin/ld.bak && \
+    ln -s /usr/local/bin/mold /usr/bin/ld && \
+    cd .. && \
+    rm -r mold
+
 # Install cmake via pip, install pygments for gtags, pynvim for neovim
-RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.14.4 pygments pynvim thefuck pylint flake8 autopep8 mypy
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake pygments pynvim thefuck pylint flake8 autopep8 mypy
 
 # RUN git clone https://github.com/MaskRay/ccls --recursive --depth=1 && \
     # mkdir ccls/build && cd ccls/build && CC=clang-8 CXX=clang++-8 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/clang+llvm-8.0.0-x86_64-linux-gnu-ubuntu-16.04/ -GNinja .. && \
@@ -57,7 +55,7 @@ RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.14.4 pygme
 RUN wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && chmod 755 -R squashfs-root && rm nvim.appimage && ln -s /squashfs-root/AppRun /usr/bin/nvim
 
 # Install tmux
-RUN ["/bin/bash", "-c", "TMUX_VERSION=3.0a &&       \
+RUN ["/bin/bash", "-c", "TMUX_VERSION=3.2a &&       \
 wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
 mkdir tmux-unzipped &&    \
 tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
@@ -71,37 +69,36 @@ rm -rf tmux-unzipped"]
 # -----------
 
 # Install gtags
-RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.3 &&     \
-wget http://tamacom.com/global/global-$GTAGS_VERSION.tar.gz &&  \
-mkdir gtags-unzipped && \
-tar xf global-$GTAGS_VERSION.tar.gz -C gtags-unzipped && \
-pushd gtags-unzipped/global-$GTAGS_VERSION &&  \
-./configure &&  \
-make && \
-make install && \
-popd && \
-rm -rf gtags-unzipped"]
+# RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.3 &&     \
+# wget http://tamacom.com/global/global-$GTAGS_VERSION.tar.gz &&  \
+# mkdir gtags-unzipped && \
+# tar xf global-$GTAGS_VERSION.tar.gz -C gtags-unzipped && \
+# pushd gtags-unzipped/global-$GTAGS_VERSION &&  \
+# ./configure &&  \
+# make && \
+# make install && \
+# popd && \
+# rm -rf gtags-unzipped"]
 
 # Install ctags
-RUN ["/bin/bash", "-c", "git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
-cd ctags && \
-./autogen.sh  && \
-./configure && \
-make -j$(nproc) && \
-make install && \
-rm -rf ctags"]
+# RUN ["/bin/bash", "-c", "git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
+# cd ctags && \
+# ./autogen.sh  && \
+# ./configure && \
+# make -j$(nproc) && \
+# make install && \
+# rm -rf ctags"]
 
-RUN ["/bin/bash", "-c", "mkdir git-lfs && curl -L https://github.com/git-lfs/git-lfs/releases/download/v2.8.0/git-lfs-linux-amd64-v2.8.0.tar.gz | tar xzf - -C git-lfs && pushd git-lfs && ./install.sh && popd && rm -rf git-lfs"]
+# RUN ["/bin/bash", "-c", "mkdir git-lfs && curl -L https://github.com/git-lfs/git-lfs/releases/download/v2.8.0/git-lfs-linux-amd64-v2.8.0.tar.gz | tar xzf - -C git-lfs && pushd git-lfs && ./install.sh && popd && rm -rf git-lfs"]
 
-COPY apply-format /usr/bin/
-COPY clangformat-git-hook /usr/bin/
-COPY clangtidy-git-hook /usr/bin/
-COPY install-clangformat-hook /usr/bin/
-COPY install-clangtidy-hook /usr/bin/
+# COPY apply-format /usr/bin/
+# COPY clangformat-git-hook /usr/bin/
+# COPY clangtidy-git-hook /usr/bin/
+# COPY install-clangformat-hook /usr/bin/
+# COPY install-clangtidy-hook /usr/bin/
 
 # Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -
-RUN apt-get install -y nodejs
+RUN wget install-node.vercel.app/lts -O node.sh && bash node.sh --yes && rm node.sh
 
 # Set timezone
 ENV TZ=Asia/Shanghai
@@ -143,7 +140,7 @@ COPY --chown=dev:dev .vimrc.local /home/dev/
 COPY --chown=dev:dev coc-settings.json /home/dev/.config/nvim/
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN nvim +'PlugInstall --sync' +qa
-RUN nvim +'CocInstall coc-json coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-java coc-clangd coc-cmake -sync' +qa
+RUN nvim +'CocInstall coc-json coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-clangd coc-cmake -sync' +qa
 
 RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/dev/.tmux/ &&    \
 ln -s /home/dev/.tmux/.tmux.conf /home/dev/.tmux.conf
@@ -162,7 +159,7 @@ COPY --chown=dev:dev .zshrc /home/dev/.zshrc
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/dev/.fzf && /home/dev/.fzf/install --key-bindings --completion --update-rc
 # -----------
 
-COPY default_clang_tidy /usr/share/default_clang_tidy
-COPY default_clang_format /usr/share/default_clang_format
+# COPY default_clang_tidy /usr/share/default_clang_tidy
+# COPY default_clang_format /usr/share/default_clang_format
 
 CMD ["zsh"]
