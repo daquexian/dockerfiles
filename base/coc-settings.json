@@ -1,8 +1,49 @@
 {
-  "python.jediEnabled": false,
-  "clangd.path": "clangd-10",
-  "clangd.arguments": ["-cross-file-rename"],
+  "suggest.autoTrigger": "none",
+  "coc.preferences.maxFileSize": "1MB",
+  "coc.preferences.semanticTokensHighlights": true,
+  "codeLens.enable": false,
+  "python.formatting.provider": "black",
+  "python.pythonPath": "python3",
+  "clangd.enabled": true,
+  // "clangd.path": "/home/dev/files/repos/llvm-project/build-llvm/bin/clangd",
+  "clangd.path": "/home/dev/clangd-489012f-x86_64.AppImage",
+  "clangd.arguments": [
+    "-cross-file-rename"
+  ],
   "languageserver": {
+    "ocaml": {
+      "command": "opam",
+      "args": ["config", "exec", "--", "ocaml-language-server", "--stdio"],
+      "filetypes": ["ocaml", "reason"]
+    },
+    "tagls": {
+      "command": "python3",
+      "args": ["-m", "tagls"],
+      "filetypes": [
+        "c",
+        "cpp",
+        "python"
+      ],
+      "initializationOptions": {
+        "register_official_methods": []
+      },
+      "settings": {}
+    }
   }
+  // "clangd.arguments": ["-cross-file-rename", "-clang-tidy"],
+  // "languageserver": {
+  //   "ccls": {
+  //     "command": "/home/dev/files/repos/ccls/Release/ccls",
+  //     "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
+  //     "rootPatterns": [".ccls", "compile_commands.json", ".git/", ".hg/"],
+  //     "initializationOptions": {
+  //       "cache": {
+  //         "directory": "/tmp/ccls"
+  //       }
+  //     },
+  //     "disableDiagnostics": true,
+  //     "disableCompletion": true
+  //   }
+  // }
 }
-

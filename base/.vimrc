@@ -144,12 +144,37 @@ Plug 'tpope/vim-repeat'
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 
 inoremap <silent><expr> <c-k> coc#refresh()
-nmap <silent> <leader>jd <Plug>(coc-definition)
+function! GoToDefinition()
+  let l:r = CocAction('jumpDefinition')
+  if !r
+    let l:r = CocLocations('tagls','$tagls/textDocument/definition')
+    if r
+      echo "[coc.nvim] use tagls as callback"
+    else
+      echohl WarningMsg | echom "[coc.nvim] definition not found by tagls" | echohl None
+    endif
+  endif
+endfunction
+
+function! GoToReferences()
+  let l:r = CocAction('jumpReferences')
+  if !r
+    let l:r = CocLocations('tagls','$tagls/textDocument/references')
+    if r
+      echo "[coc.nvim] use tagls as callback"
+    else
+      echohl WarningMsg | echom "[coc.nvim] references not found by tagls" | echohl None
+    endif
+  endif
+endfunction
+
+nmap <silent> <leader>jd :call GoToDefinition()<cr>
 nmap <silent> <leader>jj <Plug>(coc-rename)
 nmap <silent> <leader>ji <Plug>(coc-implementation)
-nmap <silent> <leader>jf <Plug>(coc-references)
+nmap <silent> <leader>jf :call GoToReferences()<cr>
 nmap <silent> <leader>jt <Plug>(coc-type-definition)<cr>
-nnoremap <silent> <leader>jb :call CocLocations('ccls','$ccls/inheritance',{'levels':10})<cr>
+nnoremap <silent> <leader>kd :call CocLocations('tagls','$tagls/textDocument/definition')<cr>
+nnoremap <silent> <leader>kf :call CocLocations('tagls','$tagls/textDocument/references')<cr>
 nnoremap <silent> <leader>je :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':10})<cr>
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)

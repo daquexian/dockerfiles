@@ -1,0 +1,51 @@
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+MAINTAINER daquexian
+
+ENV DEBIAN_FRONTEND=noninteractive 
+
+# Uncomment it if you are in China
+RUN sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+
+# Add common tools available in apt repository. We choose not to support python2
+RUN apt update && \
+    apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
+    apt update && \
+    apt -o Acquire::http::proxy=false install -y ccache libopenblas-dev nasm man locales pkg-config python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev unzip libcurl4-openssl-dev tzdata sudo && \
+    apt clean
+
+RUN locale-gen "en_US.UTF-8"
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+RUN wget https://apt.llvm.org/llvm.sh && \
+    chmod +x llvm.sh && \
+    ./llvm.sh 13
+
+# Install Ninja
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
+
+# Install pip
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3
+
+# Install cmake via pip
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake==3.22.0
+
+# Set timezone
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Add user "dev"
+RUN useradd dev -m && echo "dev:dev" | chpasswd && usermod -aG sudo dev
+
+USER dev
+WORKDIR /home/dev/
+
+# Set PyPI mirror
+RUN mkdir -p /home/dev/.config/pip && \
+echo "[global]" >> /home/dev/.config/pip/pip.conf && \
+echo "index-url = https://mirrors.ustc.edu.cn/pypi/web/simple" >> /home/dev/.config/pip/pip.conf && \
+echo "format = columns" >> /home/dev/.config/pip/pip.conf
+

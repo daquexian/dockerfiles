@@ -11,7 +11,7 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN apt update && \
     apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
     apt update && \
-    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev libcurl4-openssl-dev gdb tzdata zip tree sudo libstdc++-10-dev libssl-dev libxxhash-dev zlib1g-dev clang ccache rsync && \
+    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev libcurl4-openssl-dev gdb tzdata zip tree sudo libstdc++-10-dev libssl-dev libxxhash-dev zlib1g-dev clang ccache rsync fuse bat && \
     apt clean
 
 RUN locale-gen "en_US.UTF-8"
@@ -25,7 +25,7 @@ RUN wget https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-li
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3
 
 # Install cmake via pip, install pygments for gtags, pynvim for neovim
-RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake pygments pynvim thefuck pylint flake8 autopep8 mypy
+RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake pygments pynvim thefuck pylint flake8 autopep8 mypy tagls
 
 # Install mold
 RUN git clone https://github.com/rui314/mold.git && \
@@ -43,59 +43,43 @@ RUN git clone https://github.com/rui314/mold.git && \
     # cmake --build . -- -j`nproc` && \
     # ln -s `pwd`/ccls /usr/bin/ccls
 
-# RUN echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
-# echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial main" >> /etc/apt/sources.list.d/clang.list && \
-# echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
-# echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main" >> /etc/apt/sources.list.d/clang.list && \
-# echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list && \
-# echo "deb-src http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main" >> /etc/apt/sources.list.d/clang.list
-#
-# RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add - && apt -o Acquire::http::proxy=false update && apt install -y clang-format-8 clang-tidy-8 clang-tools-8 && cd /usr/bin && ln -s clangd-8 clangd && ln -s clang-tidy-8 clang-tidy && ln -s clang-tidy-diff-8.py clang-tidy-diff.py && ln -s clang-format-diff-8 clang-format-diff && ln -s clang-format-8 clang-format && apt clean
-
 RUN wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && chmod 755 -R squashfs-root && rm nvim.appimage && ln -s /squashfs-root/AppRun /usr/bin/nvim
 
 # Install tmux
 RUN ["/bin/bash", "-c", "TMUX_VERSION=3.2a &&       \
-wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
-mkdir tmux-unzipped &&    \
-tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
-rm -f tmux-${TMUX_VERSION}.tar.gz &&       \
-pushd tmux-unzipped/tmux-${TMUX_VERSION} &&        \
-./configure &&     \
-make -j`nproc`&&        \
-make install &&       \
-popd &&        \
-rm -rf tmux-unzipped"]
+    wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
+    mkdir tmux-unzipped &&    \
+    tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
+    rm -f tmux-${TMUX_VERSION}.tar.gz &&       \
+    pushd tmux-unzipped/tmux-${TMUX_VERSION} &&        \
+    ./configure &&     \
+    make -j`nproc`&&        \
+    make install &&       \
+    popd &&        \
+    rm -rf tmux-unzipped"]
 # -----------
 
+# Install ctags to /usr/local/bin/ctags
+RUN ["/bin/bash", "-c", "git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
+    pushd ctags && \
+    ./autogen.sh  && \
+    ./configure && \
+    make -j$(nproc) && \
+    make install && \
+    popd && \
+    rm -rf ctags"]
+
 # Install gtags
-# RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.3 &&     \
-# wget http://tamacom.com/global/global-$GTAGS_VERSION.tar.gz &&  \
-# mkdir gtags-unzipped && \
-# tar xf global-$GTAGS_VERSION.tar.gz -C gtags-unzipped && \
-# pushd gtags-unzipped/global-$GTAGS_VERSION &&  \
-# ./configure &&  \
-# make && \
-# make install && \
-# popd && \
-# rm -rf gtags-unzipped"]
-
-# Install ctags
-# RUN ["/bin/bash", "-c", "git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
-# cd ctags && \
-# ./autogen.sh  && \
-# ./configure && \
-# make -j$(nproc) && \
-# make install && \
-# rm -rf ctags"]
-
-# RUN ["/bin/bash", "-c", "mkdir git-lfs && curl -L https://github.com/git-lfs/git-lfs/releases/download/v2.8.0/git-lfs-linux-amd64-v2.8.0.tar.gz | tar xzf - -C git-lfs && pushd git-lfs && ./install.sh && popd && rm -rf git-lfs"]
-
-# COPY apply-format /usr/bin/
-# COPY clangformat-git-hook /usr/bin/
-# COPY clangtidy-git-hook /usr/bin/
-# COPY install-clangformat-hook /usr/bin/
-# COPY install-clangtidy-hook /usr/bin/
+RUN ["/bin/bash", "-c", "GTAGS_VERSION=6.6.8 &&     \
+    wget https://ftp.gnu.org/pub/gnu/global/global-$GTAGS_VERSION.tar.gz &&  \
+    mkdir gtags-unzipped && \
+    tar xf global-$GTAGS_VERSION.tar.gz -C gtags-unzipped && \
+    pushd gtags-unzipped/global-$GTAGS_VERSION &&  \
+    ./configure --with-universal-ctags=/usr/local/bin/ctags &&  \
+    make && \
+    make install && \
+    popd && \
+    rm -rf gtags-unzipped"]
 
 # Install nodejs
 RUN wget install-node.vercel.app/lts -O node.sh && bash node.sh --yes && rm node.sh
@@ -117,8 +101,14 @@ RUN chsh -s `which zsh` dev
 USER dev
 WORKDIR /home/dev/
 
+# gtags config
+COPY --chown=dev:dev .globalrc /home/dev/
+# bat config
+COPY --chown=dev:dev bat_config /home/dev/.config/bat/config
+
 # Install yarn
 RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+ENV PATH="/home/dev/.yarn/bin:${PATH}"
 
 # Install oh-my-zsh
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -138,9 +128,10 @@ COPY --chown=dev:dev .gitconfig /home/dev/
 COPY --chown=dev:dev .vimrc /home/dev/
 COPY --chown=dev:dev .vimrc.local /home/dev/
 COPY --chown=dev:dev coc-settings.json /home/dev/.config/nvim/
+COPY --chown=dev:dev yank /usr/local/bin/
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 RUN nvim +'PlugInstall --sync' +qa
-RUN nvim +'CocInstall coc-json coc-python coc-highlight coc-snippets coc-lists coc-git coc-yank coc-clangd coc-cmake -sync' +qa
+RUN nvim +'CocInstall coc-json coc-pyright coc-highlight coc-snippets coc-lists coc-git coc-yank coc-clangd coc-cmake -sync' +qa
 
 RUN git clone --depth 1 https://github.com/gpakosz/.tmux.git /home/dev/.tmux/ &&    \
 ln -s /home/dev/.tmux/.tmux.conf /home/dev/.tmux.conf
@@ -158,6 +149,9 @@ COPY --chown=dev:dev .zshrc /home/dev/.zshrc
 # Install fzf last so that the modified .zsrc will not be overwritted
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/dev/.fzf && /home/dev/.fzf/install --key-bindings --completion --update-rc
 # -----------
+
+# Link bat
+RUN mkdir -p /home/dev/.local/bin && ln -s /usr/bin/batcat /home/dev/.local/bin/bat
 
 # COPY default_clang_tidy /usr/share/default_clang_tidy
 # COPY default_clang_format /usr/share/default_clang_format
