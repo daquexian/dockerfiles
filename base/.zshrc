@@ -37,3 +37,5 @@ eval $(thefuck --alias)
 alias fk=fuck
 
 source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+eval "$(hub alias -s zsh)"
