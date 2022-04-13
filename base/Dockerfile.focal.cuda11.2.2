@@ -11,7 +11,8 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN apt update && \
     apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
     apt update && \
-    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev libcurl4-openssl-dev gdb tzdata zip tree sudo libstdc++-10-dev libssl-dev libxxhash-dev zlib1g-dev clang ccache rsync fuse bat openssh-server netcat && \
+    apt -o Acquire::http::proxy=false install -y aria2 man telnet locales pkg-config inetutils-ping net-tools git zsh thefuck mc sed ack-grep ranger htop silversearcher-ag python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip openjdk-8-jdk colordiff mlocate iftop libpulse-dev libv4l-dev libcurl4-openssl-dev gdb tzdata zip tree sudo libstdc++-10-dev libssl-dev libxxhash-dev zlib1g-dev clang ccache rsync fuse openssh-server netcat libopenblas-dev && \
+    apt -o Acquire::http::proxy=false install -o Dpkg::Options::="--force-overwrite" bat ripgrep && \
     apt clean && \
     mkdir /run/sshd
 
@@ -105,7 +106,7 @@ WORKDIR /home/dev/
 RUN mkdir -p /home/dev/.local/bin
 
 # install hub
-RUN wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub /home/dev/.local/bin/ && git config --global hub.protocol ssh
+RUN wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub /home/dev/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
 
 # gtags config
 COPY --chown=dev:dev .globalrc /home/dev/
@@ -154,6 +155,10 @@ echo "format = columns" >> /home/dev/.config/pip/pip.conf
 COPY --chown=dev:dev .zshrc /home/dev/.zshrc
 # Install fzf last so that the modified .zsrc will not be overwritted
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /home/dev/.fzf && /home/dev/.fzf/install --key-bindings --completion --update-rc
+# -----------
+
+# Copy clangd config.yaml
+COPY --chown=dev:dev clangd_config.yaml /home/dev/.config/clangd/config.yaml
 # -----------
 
 # Link bat

@@ -1,16 +1,13 @@
 {
-  "suggest.autoTrigger": "none",
+  "suggest.autoTrigger": "always",
   "coc.preferences.maxFileSize": "1MB",
-  "coc.preferences.semanticTokensHighlights": true,
   "codeLens.enable": false,
   "python.formatting.provider": "black",
   "python.pythonPath": "python3",
   "clangd.enabled": true,
   // "clangd.path": "/home/dev/files/repos/llvm-project/build-llvm/bin/clangd",
   "clangd.path": "/home/dev/clangd-489012f-x86_64.AppImage",
-  "clangd.arguments": [
-    "-cross-file-rename"
-  ],
+  "clangd.arguments": [],
   "languageserver": {
     "ocaml": {
       "command": "opam",

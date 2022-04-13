@@ -568,3 +568,4 @@ nmap <leader>mt <plug>(MergetoolToggle)
 nmap <leader>dg :diffget<cr>
 nmap <leader>dp :diffput<cr>
 
+command! -nargs=0 A CocCommand clangd.switchSourceHeader
