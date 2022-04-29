@@ -143,35 +143,54 @@ Plug 'tpope/vim-repeat'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 
+
 inoremap <silent><expr> <c-k> coc#refresh()
-function! GoToDefinition()
-  let l:r = CocAction('jumpDefinition')
-  if !r
-    let l:r = CocLocations('tagls','$tagls/textDocument/definition')
-    if r
-      echo "[coc.nvim] use tagls as callback"
-    else
-      echohl WarningMsg | echom "[coc.nvim] definition not found by tagls" | echohl None
-    endif
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+function! PrintAndCopyFilename()
+  echom @%
+  call Yank(@%)
+endfunction
+
+function! PrintAndCopyFilenameAndLineNumber()
+  let fn_line = @% . ':' . line('.')
+  echom fn_line
+  call Yank(fn_line)
+endfunction
+
+nnoremap <silent><nowait> <C-g> :call PrintAndCopyFilenameAndLineNumber()<cr>
+
+function! CallbackForTagLS(kind, err, resp)
+  if a:err != v:null || a:resp != v:true
+    echohl WarningMsg | echom "[coc.nvim] " . kind . " not found by tagls" | echohl None
+  else
+    echom "[coc.nvim] use tagls as callback"
   endif
 endfunction
 
-function! GoToReferences()
-  let l:r = CocAction('jumpReferences')
-  if !r
-    let l:r = CocLocations('tagls','$tagls/textDocument/references')
-    if r
-      echo "[coc.nvim] use tagls as callback"
-    else
-      echohl WarningMsg | echom "[coc.nvim] references not found by tagls" | echohl None
-    endif
+function! CallbackForOfficalLSP(kind, err, resp)
+  if a:err != v:null || a:resp != v:true
+    call CocLocationsAsync('tagls', '$tagls/textDocument/' . a:kind, {err, resp -> CallbackForTagLS(a:kind, err, resp)})
   endif
 endfunction
 
-nmap <silent> <leader>jd :call GoToDefinition()<cr>
+function! GoToWithTagLSFallback(action, kind)
+  call CocActionAsync(a:action, {err, resp -> CallbackForOfficalLSP(a:kind, err, resp)})
+endfunction
+
+nmap <silent> <leader>jd :call GoToWithTagLSFallback('jumpDefinition', 'definition')<cr>
+nmap <silent> <leader>jf :call GoToWithTagLSFallback('jumpReferences', 'references')<cr>
 nmap <silent> <leader>jj <Plug>(coc-rename)
 nmap <silent> <leader>ji <Plug>(coc-implementation)
-nmap <silent> <leader>jf :call GoToReferences()<cr>
 nmap <silent> <leader>jt <Plug>(coc-type-definition)<cr>
 nnoremap <silent> <leader>kd :call CocLocations('tagls','$tagls/textDocument/definition')<cr>
 nnoremap <silent> <leader>kf :call CocLocations('tagls','$tagls/textDocument/references')<cr>
@@ -182,8 +201,8 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 nmap <silent> <C-j> <Plug>(coc-diagnostic-next)
 nmap <silent> <C-k> <Plug>(coc-diagnostic-prev)
 nnoremap <silent> K :call CocActionAsync('doHover')<cr>
-nnoremap <silent> <A-i> :call CocActionAsync('showSignatureHelp')<cr>
-imap <silent> <A-i> <c-o><A-i>
+nnoremap <silent> <C-s> :call CocActionAsync('showSignatureHelp')<cr>
+imap <silent> <C-s> <c-o><C-s>
 augroup cocaug
   au!
   au CursorMoved * sil call CocActionAsync('highlight')
@@ -332,8 +351,8 @@ if exists('+termguicolors')     " enable true colors support in tmux
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
-set t_ZH=[3m
-set t_ZR=[23m
+set t_ZH=[3m
+set t_ZR=[23m
 
 Plug 'christoomey/vim-tmux-navigator'
 
@@ -381,9 +400,7 @@ let g:sneak#s_next = 1
 
 Plug 'tpope/vim-sleuth'
 
-Plug 'm-pilia/vim-ccls'
-
-Plug 'ericcurtin/CurtineIncSw.vim'
+" Plug 'm-pilia/vim-ccls'
 
 let g:vimspector_enable_mappings = 'HUMAN'
 
@@ -480,7 +497,7 @@ lua <<EOF
 local ok, _ = pcall(require, 'nvim-treesitter.configs')
 if ok then
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
+  ensure_installed = "all",
   incremental_selection = {
     enable = true,
     keymaps = {

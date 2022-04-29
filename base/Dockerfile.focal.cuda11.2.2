@@ -32,8 +32,8 @@ RUN pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple cmake pygments pynv
 # Install mold
 RUN git clone https://github.com/rui314/mold.git && \
     cd mold && \
-    git checkout 100922b && \
-    make -j$(nproc) && \
+    git checkout v1.2.1 && \
+    make -j$(nproc) CXX=clang++-14 && \
     make install && \
     mv /usr/bin/ld /usr/bin/ld.bak && \
     ln -s /usr/local/bin/mold /usr/bin/ld && \
