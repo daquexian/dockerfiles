@@ -92,6 +92,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN echo "export LC_ALL=en_US.UTF-8" >> /etc/zsh/zshenv && echo "export LANG=en_US.UTF-8" >> /etc/zsh/zshenv
 
+COPY imgcat /usr/local/bin/imgcat
+
 ARG DEV_UID
 
 # Add user "dev"
