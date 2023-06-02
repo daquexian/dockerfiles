@@ -1,0 +1,32 @@
+FROM nvidia/cuda:11.2.2-cudnn8-devel-ubuntu20.04
+MAINTAINER daquexian
+
+ENV DEBIAN_FRONTEND=noninteractive 
+
+# Comment it if you are not in China
+RUN sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+
+# Add common tools and oneflow dependencies available in apt repository.
+RUN apt update && \
+    apt -o Acquire::http::proxy=false install -y apt-utils software-properties-common && \
+    apt update && \
+    apt -o Acquire::http::proxy=false install -y man pkg-config git locales sed ack-grep htop python3 python3-dev build-essential autoconf automake libtool make gcc g++ curl wget tar libevent-dev libncurses-dev unzip libcurl4-openssl-dev gdb zip tree sudo libxxhash-dev zlib1g-dev ccache fuse libopenblas-dev nasm && \
+    apt clean
+
+RUN locale-gen "en_US.UTF-8"
+
+# Install Ninja
+RUN wget https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja
+
+# Install pip
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3
+
+RUN python3 -m pip install cmake
+RUN echo "export PATH=$HOME/.local/bin:$PATH" >> .bashrc
+
+# Install mold-1.1.1
+RUN wget https://github.com/rui314/mold/releases/download/v1.1.1/mold-1.1.1-x86_64-linux.tar.gz && \
+    tar xvf mold-1.1.1-x86_64-linux.tar.gz && \
+    cp mold-1.1.1-x86_64-linux/bin/mold /usr/bin/ld && \
+    rm -r mold*

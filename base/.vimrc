@@ -143,7 +143,6 @@ Plug 'tpope/vim-repeat'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 
-
 inoremap <silent><expr> <c-k> coc#refresh()
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
@@ -158,13 +157,13 @@ endif
 
 function! PrintAndCopyFilename()
   echom @%
-  call Yank(@%)
+  call OSCYankString(@%)
 endfunction
 
 function! PrintAndCopyFilenameAndLineNumber()
   let fn_line = @% . ':' . line('.')
   echom fn_line
-  call Yank(fn_line)
+  call OSCYankString(fn_line)
 endfunction
 
 nnoremap <silent><nowait> <C-g> :call PrintAndCopyFilenameAndLineNumber()<cr>
@@ -351,8 +350,8 @@ if exists('+termguicolors')     " enable true colors support in tmux
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
-set t_ZH=[3m
-set t_ZR=[23m
+set t_ZH=[3m
+set t_ZR=[23m
 
 Plug 'christoomey/vim-tmux-navigator'
 
@@ -377,10 +376,11 @@ omap <silent> iX <Plug>CamelCaseMotion_ie
 xmap <silent> iX <Plug>CamelCaseMotion_ie
 " Plug 'Julian/vim-textobj-variable-segment'
 
-" Plug 'github/copilot.vim'
-let g:copilot_browser = []
-" imap <silent><script><expr> <C-f> copilot#Accept("\<CR>")
-" imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")
+Plug 'github/copilot.vim'
+let g:copilot_hide_during_completion = 0
+let g:copilot_browser = ['']
+imap <silent><script><expr> <C-f> copilot#Accept("\<CR>")
+imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 
 " Plug 'vim-scripts/DoxygenToolkit.vim'
@@ -400,15 +400,13 @@ let g:sneak#s_next = 1
 
 Plug 'tpope/vim-sleuth'
 
-" Plug 'm-pilia/vim-ccls'
-
-let g:vimspector_enable_mappings = 'HUMAN'
-
-Plug 'puremourning/vimspector'
+" Plug 'ericcurtin/CurtineIncSw.vim'
 
 Plug 'antoinemadec/coc-fzf'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+
+Plug 'ojroques/vim-oscyank', {'branch': 'main'}
 
 call plug#end()            " required
 
@@ -416,9 +414,10 @@ set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 set foldlevel=99
 
-command! -nargs=0 A :call CurtineIncSw()
 filetype plugin indent on    " required
 syntax on
+
+command! -nargs=0 A CocCommand clangd.switchSourceHeader
 
 " set fixed height of preview window
 set previewheight=20
@@ -473,21 +472,6 @@ inoremap <A-j> <C-\><C-N><C-w>j
 inoremap <A-k> <C-\><C-N><C-w>k
 inoremap <A-l> <C-\><C-N><C-w>l
 
-nmap <A-r> <Plug>BuildAndRun
-nmap <A-u> <Plug>Run
-nmap <A-s> <Plug>SelectConfig
-nmap <A-e> <Plug>OpenConfig
-nmap <A-c> :Tclose<cr>
-nmap <A-o> :Topen<cr>
-
-function! g:ConfigCallback()
-    execute 'silent !cd '.g:cpp_project_props['build_dir'].'/..'
-    execute 'silent !ln -sf ' . g:cpp_project_props['build_dir'] . '/compile_commands.json '.g:cpp_project_props['build_dir'].'/..'
-    if exists(':CocRestart')
-        execute 'CocRestart'
-    endif
-endfunction
-
 inoremap <expr> <TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -530,7 +514,7 @@ function! s:edge_custom() abort
   " Link a highlight group to a predefined highlight group.
   " See `colors/edge.vim` for all predefined highlight groups.
   let s:configuration = edge#get_configuration()
-  let s:palette = edge#get_palette(s:configuration.style)
+  let s:palette = edge#get_palette(s:configuration.style, 0, {})
   call edge#highlight('None', s:palette.none, s:palette.none)
   call edge#highlight('CustomParameter', s:palette.fg, s:palette.none, 'italic,nocombine')
   call edge#highlight('CustomProperty', s:palette.red, s:palette.none, 'italic,nocombine')
@@ -560,23 +544,8 @@ colorscheme edge
 " hi! link CocSem_class Typedef
 " hi! link CocSem_parameter TODO
 
-" copy to attached terminal using the yank(1) script:
-" https://github.com/sunaku/home/blob/master/bin/yank
-function! Yank(text) abort
-  let escape = system('yank', a:text)
-  if v:shell_error
-    echoerr escape
-  else
-    call writefile([escape], '/dev/tty', 'b')
-  endif
-endfunction
-
-" automatically run yank(1) whenever yanking in Vim
-" (this snippet was contributed by Larry Sanderson)
-function! CopyYank() abort
-  call Yank(join(v:event.regcontents, "\n"))
-endfunction
-autocmd TextYankPost * call CopyYank()
+let g:oscyank_silent = v:true  " or 1 for older versions of Vim
+autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif
 
 packadd termdebug
 let g:termdebug_wide = 1
@@ -585,4 +554,3 @@ nmap <leader>mt <plug>(MergetoolToggle)
 nmap <leader>dg :diffget<cr>
 nmap <leader>dp :diffput<cr>
 
-command! -nargs=0 A CocCommand clangd.switchSourceHeader
