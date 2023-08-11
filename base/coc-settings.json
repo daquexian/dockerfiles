@@ -1,12 +1,13 @@
 {
   "suggest.autoTrigger": "always",
-  "coc.preferences.maxFileSize": "1MB",
+  "coc.preferences.maxFileSize": "500KB",
+  "coc.preferences.enableMessageDialog": true,
+  "suggest.noselect": true,
+  "semanticTokens.filetypes": ["*"],
   "codeLens.enable": false,
-  "python.formatting.provider": "black",
-  "python.pythonPath": "python3",
   "clangd.enabled": true,
   // "clangd.path": "/home/dev/files/repos/llvm-project/build-llvm/bin/clangd",
-  "clangd.path": "/home/dev/clangd-489012f-x86_64.AppImage",
+  // "clangd.path": "/home/dev/clangd-489012f-x86_64.AppImage",
   "clangd.arguments": [],
   "languageserver": {
     "ocaml": {
