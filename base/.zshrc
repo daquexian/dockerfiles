@@ -33,9 +33,27 @@ bindkey "^?" backward-delete-char
 
 alias vim=nvim
 alias top=htop
-eval $(thefuck --alias)
 alias fk=fuck
 
 source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 eval "$(hub alias -s zsh)"
+
+function upload {
+    url=`curl https://oshi.at -F f=@$1 | tail -1 | sed 's/DL: //'`
+    echo "url: $url"
+    # copy to attached terminal using the yank(1) script:
+    # https://github.com/sunaku/home/blob/master/bin/yank
+    echo $url | yank
+}
+
+function dl {
+    DEST=${2:-Downloads}
+    source ~/.dlrc
+    scp -P $DL_PORT $1 daquexian@localhost:$DEST
+}
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+alias py='python3'
+
