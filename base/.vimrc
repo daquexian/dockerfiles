@@ -157,13 +157,13 @@ endif
 
 function! PrintAndCopyFilename()
   echom @%
-  call OSCYankString(@%)
+  call OSCYank(@%)
 endfunction
 
 function! PrintAndCopyFilenameAndLineNumber()
   let fn_line = @% . ':' . line('.')
   echom fn_line
-  call OSCYankString(fn_line)
+  call OSCYank(fn_line)
 endfunction
 
 nnoremap <silent><nowait> <C-g> :call PrintAndCopyFilenameAndLineNumber()<cr>
@@ -545,7 +545,7 @@ colorscheme edge
 " hi! link CocSem_parameter TODO
 
 let g:oscyank_silent = v:true  " or 1 for older versions of Vim
-autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankReg "' | endif
+autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankRegister "' | endif
 
 packadd termdebug
 let g:termdebug_wide = 1
