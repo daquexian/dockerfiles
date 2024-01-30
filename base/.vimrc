@@ -8,7 +8,6 @@ cmap w!! w !sudo tee > /dev/null %
 cmap vsb vertical sb
 
 let mapleader="\<space>"
-map <leader>tl :TlistToggle<CR>
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
@@ -196,9 +195,10 @@ nnoremap <silent> <leader>kf :call CocLocations('tagls','$tagls/textDocument/ref
 nnoremap <silent> <leader>je :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':10})<cr>
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
-" Use `[c` and `]c` to navigate diagnostics
-nmap <silent> <C-j> <Plug>(coc-diagnostic-next)
-nmap <silent> <C-k> <Plug>(coc-diagnostic-prev)
+nmap <silent> <C-n> <Plug>(coc-diagnostic-next)
+nmap <silent> <C-m> <Plug>(coc-diagnostic-prev)
+nmap <silent> <C-j> <Plug>(coc-diagnostic-next-error)
+nmap <silent> <C-k> <Plug>(coc-diagnostic-prev-error)
 nnoremap <silent> K :call CocActionAsync('doHover')<cr>
 nnoremap <silent> <C-s> :call CocActionAsync('showSignatureHelp')<cr>
 imap <silent> <C-s> <c-o><C-s>
@@ -408,6 +408,9 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend upda
 
 Plug 'ojroques/vim-oscyank', {'branch': 'main'}
 
+Plug 'kevinhwang91/promise-async'
+Plug 'kevinhwang91/nvim-ufo'
+
 call plug#end()            " required
 
 set foldmethod=expr
@@ -477,6 +480,17 @@ inoremap <expr> <S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 lua <<EOF
+
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+-- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+
+require('ufo').setup()
 
 local ok, _ = pcall(require, 'nvim-treesitter.configs')
 if ok then
