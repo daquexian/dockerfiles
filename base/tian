@@ -118,9 +118,6 @@ wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.global
 wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/yank -O /usr/local/bin/yank
 chmod +x /usr/local/bin/yank
 
-# only for tianchao
-if [[ `basename $0` == 'tian' ]]
-then
 # for coc installation
 export PATH="$HOME/.yarn/bin:${PATH}"
 
@@ -132,8 +129,4 @@ wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/coc-set
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 nvim +'PlugInstall --sync' +qa
-nvim +'CocInstall coc-json coc-pyright coc-highlight coc-snippets coc-lists coc-git coc-yank coc-clangd coc-cmake -sync' +qa
-
-echo 'export PYTHONPATH=$PYTHONPATH:/data/user/cangshui/tianchao/repos/megatron-lm' >> ~/.zshrc
-fi
-
+nvim +'CocInstall coc-json coc-pyright coc-highlight coc-lists coc-git coc-yank coc-clangd coc-cmake -sync' +qa
