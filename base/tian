@@ -103,7 +103,7 @@ echo "export HM=$HM" >> $HOME/.zshrc
 echo 'alias h="cd $HM"' >> $HOME/.zshrc
 echo 'export HISTFILE=$HM/.zsh_history' >> $HOME/.zshrc
 
-if [ -n "$http_proxy" ]; then
+if [ -n "${http_proxy:-}" ]; then
     echo "export http_proxy=$http_proxy" >> $HOME/.zshrc
     echo "export https_proxy=$https_proxy" >> $HOME/.zshrc
     echo "export HTTP_PROXY=$HTTP_PROXY" >> $HOME/.zshrc
