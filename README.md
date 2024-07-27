@@ -1,11 +1,6 @@
-# Development Docker
+自己用的
 
-This project aims to provide an out-of-box development environment for both PCs and servers.
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/tian)"
+```
 
-[base docker](base)
-
-[x2go docker](x2go)
-
-Both username and password is "dev".
-
-Any issues and pull requests are welcome!
