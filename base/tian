@@ -13,12 +13,11 @@ HM=$SCRIPT_DIR
 mkdir -p /run/sshd
 dpkg-statoverride --remove /usr/lib/dbus-1.0/dbus-daemon-launch-helper || true
 
-if [ -d "$SCRIPT_DIR/.ssh" ]; then
+if [ "$SCRIPT_DIR" != "$HOME" ]; then
     cp -r $SCRIPT_DIR/.ssh ~/
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
     chmod 600 ~/.ssh/*
-fi
-if [ -d "$SCRIPT_DIR/.config" ]; then
+
     cp -r $SCRIPT_DIR/.config ~/
 fi
 echo 'set history save on' >> ~/.gdbinit
