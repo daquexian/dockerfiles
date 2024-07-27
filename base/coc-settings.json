@@ -7,7 +7,7 @@
   "codeLens.enable": false,
   "clangd.enabled": true,
   // "clangd.path": "/home/dev/files/repos/llvm-project/build-llvm/bin/clangd",
-  // "clangd.path": "/home/dev/clangd-489012f-x86_64.AppImage",
+  "clangd.path": "/data/user/cangshui/tianchao/clangd/clangd_16.0.2/bin/clangd",
   "clangd.arguments": [],
   "languageserver": {
     "ocaml": {

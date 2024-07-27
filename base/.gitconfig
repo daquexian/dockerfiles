@@ -1,6 +1,6 @@
 [alias]
     st = status
-    ci = commit
+    ci = commit -s
     co = checkout
     br = branch
     cp = cherry-pick
@@ -14,3 +14,29 @@
 [difftool]
 	prompt = false
 [core]
+[user]
+	email = daquexian566@gmail.com
+	name = daquexian
+[pull]
+	rebase = false
+[merge]
+    tool = vim_mergetool
+    conflictstyle = diff3
+
+[mergetool "vim_mergetool"]
+    cmd = nvim -f -c "MergetoolStart" "$MERGED" "$BASE" "$LOCAL" "$REMOTE"
+    trustExitCode = true
+[mergetool]
+	keepBackup = false
+[web]
+  browser = local-open
+[browser "local-open"]
+	cmd = local-open
+[hub]
+	protocol = ssh
+[http]
+	proxy = 
+[color]
+	ui = auto
+[credential]
+	helper = store
