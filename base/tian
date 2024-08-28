@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -uexo pipefail
+set -uex
 
 # export http_proxy=http://192.168.0.127:1080
 # export https_proxy=$http_proxy
@@ -84,7 +84,8 @@ mkdir -p $HOME/.local/bin
 
 wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub $HOME/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
 
-curl -o- -L https://yarnpkg.com/install.sh | bash
+# yarn 安装如果失败就算了
+curl -o- -L https://yarnpkg.com/install.sh | bash || true
 
 CHSH=no RUNZSH=no sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -108,8 +109,8 @@ echo 'export HISTFILE=$HM/.zsh_history' >> $HOME/.zshrc
 if [ -n "${http_proxy:-}" ]; then
     echo "export http_proxy=$http_proxy" >> $HOME/.zshrc
     echo "export https_proxy=$https_proxy" >> $HOME/.zshrc
-    echo "export HTTP_PROXY=$HTTP_PROXY" >> $HOME/.zshrc
-    echo "export HTTPS_PROXY=$HTTPS_PROXY" >> $HOME/.zshrc
+    echo "export HTTP_PROXY=$http_proxy" >> $HOME/.zshrc
+    echo "export HTTPS_PROXY=$https_proxy" >> $HOME/.zshrc
     echo -e "\nHost github.com\n Hostname ssh.github.com\n Port 443\n" >>~/.ssh/config
     echo -e "\n140.82.113.4 github.com\n" >>/etc/hosts
 fi
