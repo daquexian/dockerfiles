@@ -57,28 +57,6 @@ TMUX_VERSION=3.2a &&       \
     popd &&        \
     rm -rf tmux-unzipped
 
-git clone --depth 1 https://github.com/universal-ctags/ctags.git && \
-    pushd ctags && \
-    ./autogen.sh  && \
-    ./configure && \
-    make -j$(nproc) && \
-    make install && \
-    popd && \
-    rm -rf ctags
-
-GTAGS_VERSION=6.6.8 &&     \
-    wget https://ftp.gnu.org/pub/gnu/global/global-$GTAGS_VERSION.tar.gz &&  \
-    mkdir gtags-unzipped && \
-    tar xf global-$GTAGS_VERSION.tar.gz -C gtags-unzipped && \
-    pushd gtags-unzipped/global-$GTAGS_VERSION &&  \
-    ./configure --with-universal-ctags=/usr/local/bin/ctags &&  \
-    make && \
-    make install && \
-    popd && \
-    rm -rf gtags-unzipped global-$GTAGS_VERSION.tar.gz
-
-wget install-node.vercel.app/lts -O node.sh && bash node.sh --yes && rm node.sh
-
 TZ=Asia/Shanghai
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -87,9 +65,6 @@ echo "export LC_ALL=en_US.UTF-8" >> /etc/zsh/zshenv && echo "export LANG=en_US.U
 mkdir -p $HOME/.local/bin
 
 wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub $HOME/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
-
-# yarn 安装如果失败就算了
-curl -o- -L https://yarnpkg.com/install.sh | bash || true
 
 CHSH=no RUNZSH=no sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -121,19 +96,15 @@ fi
 
 git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && $HOME/.fzf/install --key-bindings --completion --update-rc
 wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.tmux.conf.local -O $HOME/.tmux.conf.local
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.globalrc -O $HOME/.globalrc
 wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/yank -O /usr/local/bin/yank
 chmod +x /usr/local/bin/yank
 
 # for coc installation
-export PATH="$HOME/.yarn/bin:${PATH}"
 
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc -O $HOME/.vimrc
+wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc_light -O $HOME/.vimrc
 wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc.local -O $HOME/.vimrc.local
 wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.gitconfig -O $HOME/.gitconfig
 wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.pdbrc -O $HOME/.pdbrc
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/coc-settings.json -O $HOME/coc-settings.json
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 nvim +'PlugInstall --sync' +qa
-nvim +'CocInstall coc-json coc-pyright coc-highlight coc-lists coc-git coc-yank coc-clangd coc-cmake -sync' +qa
