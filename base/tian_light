@@ -2,15 +2,10 @@
 
 set -uex
 
-sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
-
-# export http_proxy=http://192.168.0.127:1080
-# export https_proxy=$http_proxy
-# export HTTP_PROXY=$http_proxy
-# export HTTPS_PROXY=$http_proxy
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 HM=$SCRIPT_DIR
+
+sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
 
 mkdir -p /run/sshd
 dpkg-statoverride --remove /usr/lib/dbus-1.0/dbus-daemon-launch-helper || true
@@ -18,7 +13,7 @@ dpkg-statoverride --remove /usr/lib/dbus-1.0/dbus-daemon-launch-helper || true
 if [ "$SCRIPT_DIR" != "$HOME" ]; then
     if [ -d "$SCRIPT_DIR/.ssh" ]; then
         cp -r $SCRIPT_DIR/.ssh ~/
-        cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+        cat ~/.ssh/*.pub >> ~/.ssh/authorized_keys
         chmod 600 ~/.ssh/*
     fi
 
@@ -37,18 +32,20 @@ apt update && \
 
 locale-gen "en_US.UTF-8"
 
+echo -e "\nHost github.com\n Hostname ssh.github.com\n Port 443\n" >>~/.ssh/config
+echo -e "\n140.82.113.4 github.com\n" >>/etc/hosts
 # wget https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip && unzip ninja-linux.zip -d ninja && cp ninja/ninja /usr/bin && rm -rf ninja ninja-linux.zip
 
 # curl https://bootstrap.pypa.io/get-pip.py | python3
 
 pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 
-pip install -U cmake pygments pynvim thefuck pylint flake8 autopep8 mypy tagls
+pip install -U cmake pynvim mypy 
 
-wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root /squashfs-root && chmod 755 -R /squashfs-root && rm nvim.appimage && ln -s /squashfs-root/AppRun /usr/local/bin/nvim
+rm nvim.appimage && wget https://ghgo.xyz/https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root /squashfs-root && chmod 755 -R /squashfs-root && rm nvim.appimage && ln -sf /squashfs-root/AppRun /usr/local/bin/nvim
 
 TMUX_VERSION=3.5a &&       \
-    wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
+    wget https://ghgo.xyz/https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
     mkdir tmux-unzipped &&    \
     tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
     rm -f tmux-${TMUX_VERSION}.tar.gz &&       \
@@ -57,7 +54,8 @@ TMUX_VERSION=3.5a &&       \
     make -j`nproc`&&        \
     make install &&       \
     popd &&        \
-    rm -rf tmux-unzipped
+    rm -rf tmux-unzipped && \
+    rm tmux-${TMUX_VERSION}.tar.gz
 
 TZ=Asia/Shanghai
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -66,47 +64,43 @@ echo "export LC_ALL=en_US.UTF-8" >> /etc/zsh/zshenv && echo "export LANG=en_US.U
 
 mkdir -p $HOME/.local/bin
 
-wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub $HOME/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
+# wget https://ghgo.xyz/https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub $HOME/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
 
-CHSH=no RUNZSH=no sh -c "$(wget -O- https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-
-mkdir -p $HOME/.config/nvim/ && \
-echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> $HOME/.config/nvim/init.vim && \
-echo "let &packpath=&runtimepath" >> $HOME/.config/nvim/init.vim && \
-echo "source ~/.vimrc" >> $HOME/.config/nvim/init.vim
-
-git clone --depth 1 https://github.com/gpakosz/.tmux.git $HOME/.tmux/ &&    \
+rm -rf ~/.tmux
+rm ~/.tmux.conf
+git clone --depth 1 https://ghgo.xyz/https://github.com/gpakosz/.tmux.git $HOME/.tmux/
 ln -s $HOME/.tmux/.tmux.conf $HOME/.tmux.conf
 
-mv $HOME/.zshrc $HOME/.zshrc.bak
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.zshrc -O $HOME/.zshrc
+rm -rf ~/.fzf
+git clone --depth 1 https://ghgo.xyz/https://github.com/junegunn/fzf.git $HOME/.fzf && $HOME/.fzf/install --key-bindings --completion --update-rc
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.tmux.conf.local -O $HOME/.tmux.conf.local
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/yank -O /usr/local/bin/yank
+chmod +x /usr/local/bin/yank
+
+# for coc installation
+
+rm -rf ~/.oh-my-zsh
+CHSH=no RUNZSH=no REMOTE=https://ghgo.xyz/https://github.com/ohmyzsh/ohmyzsh.git sh -c "$(wget -O- https://ghgo.xyz/https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+git clone --depth 1 https://ghgo.xyz/https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone --depth 1 https://ghgo.xyz/https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.bak
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.zshrc -O $HOME/.zshrc
 echo 'export PATH="$HOME/.yarn/bin:${PATH}"' >> $HOME/.zshrc
 echo "export HM=$HM" >> $HOME/.zshrc
 echo 'alias h="cd $HM"' >> $HOME/.zshrc
 echo 'export HISTFILE=$HM/.zsh_history' >> $HOME/.zshrc
 
-if [ -n "${http_proxy:-}" ]; then
-    echo "export http_proxy=$http_proxy" >> $HOME/.zshrc
-    echo "export https_proxy=$https_proxy" >> $HOME/.zshrc
-    echo "export HTTP_PROXY=$http_proxy" >> $HOME/.zshrc
-    echo "export HTTPS_PROXY=$https_proxy" >> $HOME/.zshrc
-    echo -e "\nHost github.com\n Hostname ssh.github.com\n Port 443\n" >>~/.ssh/config
-    echo -e "\n140.82.113.4 github.com\n" >>/etc/hosts
-fi
+rm -rf ~/.config/nvim
+mkdir -p $HOME/.config/nvim/
+echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> $HOME/.config/nvim/init.vim
+echo "let &packpath=&runtimepath" >> $HOME/.config/nvim/init.vim
+echo "source ~/.vimrc" >> $HOME/.config/nvim/init.vim
 
-git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && $HOME/.fzf/install --key-bindings --completion --update-rc
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.tmux.conf.local -O $HOME/.tmux.conf.local
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/yank -O /usr/local/bin/yank
-chmod +x /usr/local/bin/yank
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc_light -O $HOME/.vimrc
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc.local -O $HOME/.vimrc.local
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.gitconfig -O $HOME/.gitconfig
+wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.pdbrc -O $HOME/.pdbrc
 
-# for coc installation
-
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc_light -O $HOME/.vimrc
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc.local -O $HOME/.vimrc.local
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.gitconfig -O $HOME/.gitconfig
-wget https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.pdbrc -O $HOME/.pdbrc
-
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://ghgo.xyz/https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 nvim +'PlugInstall --sync' +qa
