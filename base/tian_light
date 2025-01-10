@@ -5,7 +5,7 @@ set -uex
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 HM=$SCRIPT_DIR
 
-sudo sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
+sed -i 's@//.*archive.ubuntu.com@//mirrors.ustc.edu.cn@g' /etc/apt/sources.list
 
 mkdir -p /run/sshd
 dpkg-statoverride --remove /usr/lib/dbus-1.0/dbus-daemon-launch-helper || true
