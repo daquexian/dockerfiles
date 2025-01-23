@@ -2,6 +2,8 @@
 
 set -uex
 
+GITHUB_PREFIX=${GITHUB_PREFIX:-"https://ghfast.top/"}
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 HM=$SCRIPT_DIR
 
@@ -27,7 +29,7 @@ echo "set history filename $HM/.gdb_history" >> ~/.gdbinit
 apt update && \
     apt install -y apt-utils software-properties-common && \
     apt update && \
-    apt install -y aria2 man telnet locales pkg-config inetutils-ping net-tools zsh thefuck mc sed ack-grep htop silversearcher-ag python3 python3-dev curl wget tar libevent-dev libncurses-dev unzip colordiff iftop libcurl4-openssl-dev tzdata zip tree sudo libssl-dev libxxhash-dev zlib1g-dev rsync fuse netcat bat ripgrep rlwrap socat && \
+    apt install -y bison aria2 man telnet locales pkg-config inetutils-ping net-tools zsh thefuck mc sed ack-grep htop silversearcher-ag python3 python3-dev curl wget tar libevent-dev libncurses-dev unzip colordiff iftop libcurl4-openssl-dev tzdata zip tree sudo libssl-dev libxxhash-dev zlib1g-dev rsync fuse netcat bat ripgrep rlwrap socat && \
     apt clean
 
 locale-gen "en_US.UTF-8"
@@ -42,11 +44,11 @@ pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 
 pip install -U cmake pynvim mypy 
 
-rm nvim.appimage && wget https://ghgo.xyz/https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root /squashfs-root && chmod 755 -R /squashfs-root && rm nvim.appimage && ln -sf /squashfs-root/AppRun /usr/local/bin/nvim
+rm -f nvim.appimage && wget ${GITHUB_PREFIX}https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root /squashfs-root && chmod 755 -R /squashfs-root && rm -f nvim.appimage && ln -sf /squashfs-root/AppRun /usr/local/bin/nvim
 
 TMUX_VERSION=3.5a &&       \
-    wget https://ghgo.xyz/https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
-    mkdir tmux-unzipped &&    \
+    wget ${GITHUB_PREFIX}https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
+    mkdir -p tmux-unzipped &&    \
     tar xf tmux-${TMUX_VERSION}.tar.gz -C tmux-unzipped &&     \
     rm -f tmux-${TMUX_VERSION}.tar.gz &&       \
     pushd tmux-unzipped/tmux-${TMUX_VERSION} &&        \
@@ -54,8 +56,7 @@ TMUX_VERSION=3.5a &&       \
     make -j`nproc`&&        \
     make install &&       \
     popd &&        \
-    rm -rf tmux-unzipped && \
-    rm tmux-${TMUX_VERSION}.tar.gz
+    rm -rf tmux-unzipped
 
 TZ=Asia/Shanghai
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -64,28 +65,28 @@ echo "export LC_ALL=en_US.UTF-8" >> /etc/zsh/zshenv && echo "export LANG=en_US.U
 
 mkdir -p $HOME/.local/bin
 
-# wget https://ghgo.xyz/https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub $HOME/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
+# wget ${GITHUB_PREFIX}https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz && tar xvf hub-linux-amd64-2.14.2.tgz && cp hub-linux-amd64-2.14.2/bin/hub $HOME/.local/bin/ && git config --global hub.protocol ssh && rm -r hub-linux-*
 
 rm -rf ~/.tmux
-rm ~/.tmux.conf
-git clone --depth 1 https://ghgo.xyz/https://github.com/gpakosz/.tmux.git $HOME/.tmux/
+rm -f ~/.tmux.conf
+git clone --depth 1 ${GITHUB_PREFIX}https://github.com/gpakosz/.tmux.git $HOME/.tmux/
 ln -s $HOME/.tmux/.tmux.conf $HOME/.tmux.conf
 
 rm -rf ~/.fzf
-git clone --depth 1 https://ghgo.xyz/https://github.com/junegunn/fzf.git $HOME/.fzf && $HOME/.fzf/install --key-bindings --completion --update-rc
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.tmux.conf.local -O $HOME/.tmux.conf.local
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/yank -O /usr/local/bin/yank
+git clone --depth 1 ${GITHUB_PREFIX}https://github.com/junegunn/fzf.git $HOME/.fzf && $HOME/.fzf/install --key-bindings --completion --update-rc
+wget ${GITHUB_PREFIX}https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.tmux.conf.local -O $HOME/.tmux.conf.local
+wget ${GITHUB_PREFIX}https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/yank -O /usr/local/bin/yank
 chmod +x /usr/local/bin/yank
 
 # for coc installation
 
 rm -rf ~/.oh-my-zsh
-CHSH=no RUNZSH=no REMOTE=https://ghgo.xyz/https://github.com/ohmyzsh/ohmyzsh.git sh -c "$(wget -O- https://ghgo.xyz/https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-git clone --depth 1 https://ghgo.xyz/https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone --depth 1 https://ghgo.xyz/https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+CHSH=no RUNZSH=no REMOTE=${GITHUB_PREFIX}/https://github.com/ohmyzsh/ohmyzsh.git sh -c "$(wget -O- ${GITHUB_PREFIX}/https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+git clone --depth 1 ${GITHUB_PREFIX}/https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone --depth 1 ${GITHUB_PREFIX}/https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 [ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.bak
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.zshrc -O $HOME/.zshrc
+wget ${GITHUB_PREFIX}/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.zshrc -O $HOME/.zshrc
 echo 'export PATH="$HOME/.yarn/bin:${PATH}"' >> $HOME/.zshrc
 echo "export HM=$HM" >> $HOME/.zshrc
 echo 'alias h="cd $HM"' >> $HOME/.zshrc
@@ -97,10 +98,10 @@ echo "set runtimepath^=~/.vim runtimepath+=~/.vim/after" >> $HOME/.config/nvim/i
 echo "let &packpath=&runtimepath" >> $HOME/.config/nvim/init.vim
 echo "source ~/.vimrc" >> $HOME/.config/nvim/init.vim
 
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc_light -O $HOME/.vimrc
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc.local -O $HOME/.vimrc.local
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.gitconfig -O $HOME/.gitconfig
-wget https://ghgo.xyz/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.pdbrc -O $HOME/.pdbrc
+wget ${GITHUB_PREFIX}/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc_light -O $HOME/.vimrc
+wget ${GITHUB_PREFIX}/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.vimrc.local -O $HOME/.vimrc.local
+wget ${GITHUB_PREFIX}/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.gitconfig -O $HOME/.gitconfig
+wget ${GITHUB_PREFIX}/https://raw.githubusercontent.com/daquexian/dockerfiles/master/base/.pdbrc -O $HOME/.pdbrc
 
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://ghgo.xyz/https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs ${GITHUB_PREFIX}/https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 nvim +'PlugInstall --sync' +qa
