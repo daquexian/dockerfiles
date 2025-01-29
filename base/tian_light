@@ -29,7 +29,7 @@ echo "set history filename $HM/.gdb_history" >> ~/.gdbinit
 apt update && \
     apt install -y apt-utils software-properties-common && \
     apt update && \
-    apt install -y bison aria2 man telnet locales pkg-config inetutils-ping net-tools zsh thefuck mc sed ack-grep htop silversearcher-ag python3 python3-dev curl wget tar libevent-dev libncurses-dev unzip colordiff iftop libcurl4-openssl-dev tzdata zip tree sudo libssl-dev libxxhash-dev zlib1g-dev rsync fuse netcat bat ripgrep rlwrap socat && \
+    apt install -y bison aria2 man telnet locales pkg-config inetutils-ping net-tools zsh thefuck mc sed ack-grep htop silversearcher-ag python3 python3-dev curl wget tar libevent-dev libncurses-dev unzip colordiff iftop libcurl4-openssl-dev tzdata zip tree sudo libssl-dev libxxhash-dev zlib1g-dev rsync fuse netcat-openbsd bat ripgrep rlwrap socat python3-pip && \
     apt clean
 
 locale-gen "en_US.UTF-8"
@@ -42,9 +42,9 @@ echo -e "\n140.82.113.4 github.com\n" >>/etc/hosts
 
 pip config set global.index-url https://mirrors.aliyun.com/pypi/simple
 
-pip install -U cmake pynvim mypy 
+pip install -U cmake pynvim mypy --break-system-packages
 
-rm -f nvim.appimage && wget ${GITHUB_PREFIX}https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && chmod +x nvim.appimage && ./nvim.appimage --appimage-extract && mv squashfs-root /squashfs-root && chmod 755 -R /squashfs-root && rm -f nvim.appimage && ln -sf /squashfs-root/AppRun /usr/local/bin/nvim
+rm -f nvim-linux-x86_64.appimage && wget ${GITHUB_PREFIX}https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.appimage && chmod +x nvim-linux-x86_64.appimage && ./nvim-linux-x86_64.appimage  --appimage-extract && mv squashfs-root /squashfs-root && chmod 755 -R /squashfs-root && rm -f nvim-linux-x86_64.appimage && ln -sf /squashfs-root/AppRun /usr/local/bin/nvim
 
 TMUX_VERSION=3.5a &&       \
     wget ${GITHUB_PREFIX}https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz &&    \
