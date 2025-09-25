@@ -105,3 +105,5 @@ wget ${GITHUB_PREFIX}/https://raw.githubusercontent.com/daquexian/dockerfiles/ma
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs ${GITHUB_PREFIX}/https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 nvim +'PlugInstall --sync' +qa
+
+chsh -s `which zsh`
