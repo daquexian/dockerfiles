@@ -404,7 +404,7 @@ Plug 'tpope/vim-sleuth'
 
 Plug 'antoinemadec/coc-fzf'
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 
 Plug 'ojroques/vim-oscyank', {'branch': 'main'}
 
@@ -413,9 +413,9 @@ Plug 'kevinhwang91/nvim-ufo'
 
 call plug#end()            " required
 
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
-set foldlevel=99
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
+" set foldlevel=99
 
 filetype plugin indent on    " required
 syntax on
