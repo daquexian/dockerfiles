@@ -107,3 +107,6 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs ${GITHUB_PREFIX}/https://raw.gi
 nvim +'PlugInstall --sync' +qa
 
 chsh -s `which zsh`
+
+ufw allow ssh
+ufw enable
