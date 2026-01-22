@@ -29,7 +29,7 @@ echo "set history filename $HM/.gdb_history" >> ~/.gdbinit
 apt update && \
     apt install -y apt-utils software-properties-common && \
     apt update && \
-    apt install -y bison aria2 man telnet locales pkg-config inetutils-ping net-tools zsh thefuck mc sed ack-grep htop silversearcher-ag python3 python3-dev curl wget tar libevent-dev libncurses-dev unzip colordiff iftop libcurl4-openssl-dev tzdata zip tree sudo libssl-dev libxxhash-dev zlib1g-dev rsync fuse netcat-openbsd bat ripgrep rlwrap socat python3-pip && \
+    apt install -y bison aria2 man telnet locales pkg-config inetutils-ping net-tools zsh thefuck mc sed ack-grep htop silversearcher-ag python3 python3-dev curl wget tar libevent-dev libncurses-dev unzip colordiff iftop libcurl4-openssl-dev tzdata zip tree sudo libssl-dev libxxhash-dev zlib1g-dev rsync fuse netcat-openbsd bat ripgrep rlwrap socat python3-pip clang && \
     apt clean
 
 locale-gen "en_US.UTF-8"
