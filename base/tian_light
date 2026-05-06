@@ -128,6 +128,12 @@ export NVM_DIR="$HOME/.nvm"
 nvm install node
 npm i -g @openai/codex
 
+# foundry
+curl -L https://foundry.paradigm.xyz | bash && foundryup
+
+# uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 chsh -s `which zsh`
 
 ufw allow ssh
