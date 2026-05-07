@@ -129,7 +129,7 @@ nvm install node
 npm i -g @openai/codex
 
 # foundry
-curl -L https://foundry.paradigm.xyz | bash && bash -c "foundryup"
+curl -L https://foundry.paradigm.xyz | bash && /root/.foundry/bin/foundryup
 
 # uv
 curl -LsSf https://astral.sh/uv/install.sh | sh
